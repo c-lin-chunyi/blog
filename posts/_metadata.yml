@@ -1,8 +1,28 @@
-# options specified here will apply to all posts in this folder
+# Options specified here will apply to all posts in this folder
 
-# freeze computational output
-# (see https://quarto.org/docs/projects/code-execution.html#freeze)
+# Date format
+date-format: "dddd, MMMM D, YYYY"
+
+# Freeze computational output
 freeze: true
 
 # Enable banner style title blocks
 title-block-banner: true
+
+# Add blog-post class to the banner header area
+format:
+  html:
+    code-tools: true
+    quarto-template-params:
+      banner-header-class: "blog-post"
+
+# Default for table of contents
+toc: true
+toc-title: Contents
+toc-location: left
+
+# Default author
+author:
+  - name: Chunyi Lin
+    url: https://www.chunyi-lin.com/
+    orcid: 0009-0008-9762-8705
