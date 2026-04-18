@@ -44,4 +44,5 @@ format:
     html-math-method:
       method: mathjax
       url: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.0.0/tex-chtml-nofont.min.js"
-    include-in-header: html/mathjax-stix.html
+    include-in-header:
+      - html/mathjax-stix.html
