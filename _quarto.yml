@@ -1,0 +1,48 @@
+project:
+  type: website
+
+  resources:
+    - "pgp_clin.asc.txt"
+    - "html/fonts/"
+
+website:
+  description: "A blog built with Quarto"
+  site-url: https://www.chunyi-lin.com # you must change this appropriately for RSS feeds to work properly
+  title: "Chunyi Lin"
+  navbar:
+    right:
+      - text: About
+        href: index.qmd
+      - text: Posts
+        href: posts/index.qmd
+      - icon: github
+        href: https://github.com/c-lin-chunyi
+      - icon: envelope
+        href: mailto:c.lin.chunyi@gmail.com
+  page-footer:
+    left: |
+      <span class="faux-block">{{< fa brands creative-commons >}} {{< var years >}} {{< var author-name >}}</span>
+      <span class="faux-block">All content licensed under<br>[{{< fa brands creative-commons >}} {{< fa brands creative-commons-by >}} Creative Commons {{< var license.name >}}]({{< var license.url >}})</span>
+    center: |
+      <span class="faux-block">{{< fa brands orcid >}} <strong>ORCID</strong> [{{< var orcid >}}](https://orcid.org/{{< var orcid >}})</span>
+      <span class="faux-block">{{< fa key >}} [PGP public key]({{< var pgp.key >}}) &emsp; {{< fa fingerprint >}} <strong>Fingerprint:</strong><br><span class="fingerprint">{{< var pgp.fingerprint >}}</span></span>
+    right: |
+      <span class="faux-block">Made with {{< fa brands r-project >}} and [Quarto](https://quarto.org/)</span>
+      <span class="faux-block">[View the source at {{< fa brands github >}} GitHub]({{< var github-url >}})</span>
+format:
+  html:
+    theme:
+      light:
+        - html/litera.scss
+        - brand
+        - html/site.scss
+      dark:
+        - html/litera-dark.scss
+        - brand
+        - html/site.scss
+    respect-user-color-scheme: true
+    css: styles.css
+    html-math-method:
+      method: mathjax
+      url: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.0.0/tex-chtml-nofont.min.js"
+    include-in-header: html/mathjax-stix.html

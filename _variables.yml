@@ -1,0 +1,16 @@
+author-name: "Chunyi Lin"
+
+github-url: "https://github.com/c-lin-chunyi"
+email: "c.lin.chunyi@gmail.com"
+email-url: "mailto:c.lin.chunyi@gmail.com"
+orcid: "0009-0008-9762-8705"
+
+years: "2026"
+
+license:
+  name: "CC BY 4.0"
+  url: "https://creativecommons.org/licenses/by/4.0/"
+
+pgp:
+  key: pgp_clin.asc.txt
+  fingerprint: "15C2 CB51 1D1E 1A79 C2B2<br />F5F3 ED31 DE03 7AEF 5C7E"
