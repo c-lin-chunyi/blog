@@ -1,0 +1,42 @@
+$min-contrast-ratio:   1.85 !default;
+
+// Fonts
+
+$font-size-base:              1.1rem !default;
+$headings-font-weight:        700 !default;
+
+// Tables
+
+$table-bg-scale:              0% !default;
+
+// Buttons
+
+$input-btn-padding-y:         .5rem !default;
+$input-btn-padding-x:         1.1rem !default;
+$btn-font-family:             $font-family-sans-serif !default;
+$btn-font-size:               .875rem !default;
+$btn-font-size-sm:            .688rem !default;
+
+$btn-border-radius:           1.078em !default;
+$btn-border-radius-lg:        2.688em !default;
+$btn-border-radius-sm:        .844em !default;
+
+// Tooltips
+
+$tooltip-font-size:           11px !default;
+
+// Badges
+
+$badge-font-weight:           400 !default;
+$badge-padding-y:             .6em !default;
+$badge-padding-x:             1.2em !default;
+
+// Alerts
+
+$alert-border-width:          0 !default;
+
+// Shared theme rules
+
+$theme-navbar-border-color:   $border-color !default;
+$theme-lead-color:            $gray-600 !default;
+$theme-alert-light-color:     $body-color !default;

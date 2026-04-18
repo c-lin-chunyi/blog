@@ -1,7 +1,7 @@
 /*-- scss:defaults --*/
-// Dark variant derived from the pinned local Litera theme.
+// Dark theme.
 
-$theme: "litera-dark" !default;
+$theme: "dark" !default;
 
 //
 // Color system
@@ -39,14 +39,21 @@ $danger:        $red !default;
 $light:         $gray-200 !default;
 $dark:          $gray-900;
 
-$min-contrast-ratio:   1.85 !default;
+$theme-surface-bg:                   #20262d;
+$theme-control-bg:                   #111418;
+$theme-surface-active-bg:            #252c34;
+
+// Footer
+
+$footer-bg: $black !default;
+$footer-fg: $gray-500 !default;
 
 // Body
 
 $body-bg:                   $gray-900;
 $body-color:                $gray-200;
 $body-secondary-color:      $gray-500;
-$body-tertiary-bg:          #20262d;
+$body-tertiary-bg:          $theme-surface-bg;
 $border-color:              rgba(255, 255, 255, .14);
 
 // Links
@@ -54,15 +61,6 @@ $border-color:              rgba(255, 255, 255, .14);
 $link-color:                $primary;
 $link-hover-color:          lighten($primary, 8%);
 
-// Fonts
-
-// stylelint-disable value-keyword-case
-$font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
-$font-family-serif:           Georgia, Cambria, "Times New Roman", Times, serif !default;
-// stylelint-enable
-
-$font-size-base:              1.1rem !default;
-$headings-font-weight:        700 !default;
 $headings-color:              $gray-100;
 $text-muted:                  $gray-500;
 
@@ -71,35 +69,22 @@ $text-muted:                  $gray-500;
 $table-color:                 $body-color;
 $table-bg:                    $body-bg;
 $table-border-color:          $border-color;
-$table-bg-scale:              0% !default;
-
-// Buttons
-
-$input-btn-padding-y:         .5rem !default;
-$input-btn-padding-x:         1.1rem !default;
-$btn-font-family:             $font-family-sans-serif !default;
-$btn-font-size:               .875rem !default;
-$btn-font-size-sm:            .688rem !default;
-
-$btn-border-radius:           1.078em !default;
-$btn-border-radius-lg:        2.688em !default;
-$btn-border-radius-sm:        .844em !default;
 
 // Forms
 
-$input-bg:                            #111418;
+$input-bg:                            $theme-control-bg;
 $input-color:                         $body-color;
 $input-border-color:                  $border-color;
 $input-placeholder-color:             $gray-600;
 $input-group-addon-color:             $gray-300;
-$input-group-addon-bg:                #20262d;
+$input-group-addon-bg:                $theme-surface-bg;
 
 $form-check-input-bg:                 $input-bg;
 $form-check-input-border:             1px solid $input-border-color;
 
 // Dropdowns
 
-$dropdown-bg:                         #20262d;
+$dropdown-bg:                         $theme-surface-bg;
 $dropdown-border-color:               $border-color;
 $dropdown-divider-bg:                 $border-color;
 $dropdown-link-color:                 $body-color;
@@ -126,9 +111,9 @@ $navbar-light-toggler-border-color:   $border-color;
 
 // Cards
 
-$card-bg:                             #20262d;
+$card-bg:                             $theme-surface-bg;
 $card-border-color:                   $border-color;
-$card-cap-bg:                         #252c34;
+$card-cap-bg:                         $theme-surface-active-bg;
 
 // Popovers
 
@@ -150,141 +135,36 @@ $modal-header-border-color:           $border-color;
 
 // Progress bars
 
-$progress-bg:                         #252c34;
+$progress-bg:                         $theme-surface-active-bg;
 
 // List group
 
 $list-group-color:                    $body-color;
 $list-group-bg:                       $card-bg;
 $list-group-border-color:             $border-color;
-$list-group-hover-bg:                 #252c34;
+$list-group-hover-bg:                 $theme-surface-active-bg;
 $list-group-action-hover-color:       $list-group-color;
 $list-group-action-active-bg:         $body-bg;
 
 // Breadcrumbs
 
-$breadcrumb-bg:                       #20262d;
+$breadcrumb-bg:                       $theme-surface-bg;
 $breadcrumb-divider-color:            $gray-500;
 $breadcrumb-active-color:             $gray-500;
 
 // Code
 
 $pre-color:                           inherit;
-$pre-bg:                              #111418;
+$pre-bg:                              $theme-control-bg;
 $code-color:                          #f172ac;
-$code-bg:                             #111418;
+$code-bg:                             $theme-control-bg;
 
-// Tooltips
+$theme-navbar-border-color:           rgba(255, 255, 255, .12);
+$theme-lead-color:                    $gray-500;
+$theme-alert-light-color:             $dark;
 
-$tooltip-font-size:                 11px !default;
-
-// Badges
-
-$badge-font-weight:                 400 !default;
-$badge-padding-y:                   .6em !default;
-$badge-padding-x:                   1.2em !default;
-
-// Alerts
-
-$alert-border-width:                0 !default;
-
-
+@import "theme-defaults";
 
 /*-- scss:rules --*/
 
-
-// Variables
-
-// Navbar
-
-.navbar {
-  font-size: $font-size-sm;
-  border: 1px solid rgba(255, 255, 255, .12);
-}
-
-// Typography
-
-p {
-  font-family: $font-family-serif;
-}
-
-blockquote {
-  font-style: italic;
-}
-
-footer {
-  font-size: $font-size-sm;
-}
-
-.lead {
-  font-family: $font-family-sans-serif;
-  color: $gray-500;
-}
-
-// Tables
-
-table,
-.table {
-  font-size: $font-size-sm;
-}
-
-// Navs
-
-.nav,
-.breadcrumb,
-.pagination {
-  font-size: $font-size-sm;
-}
-
-.dropdown-menu {
-  font-size: $font-size-sm;
-}
-
-// Indicators
-
-.alert {
-  font-size: $font-size-sm;
-  color: $white;
-
-  &,
-  p {
-    font-family: $font-family-sans-serif;
-  }
-
-  a,
-  .alert-link {
-    font-weight: 400;
-    color: $white;
-    text-decoration: underline;
-  }
-
-  @each $color, $value in $theme-colors {
-    &-#{$color} {
-      @if $enable-gradients {
-        background: $value linear-gradient($value, mix($body-bg, $value, 15%)) repeat-x;
-      } @else {
-        background-color: $value;
-      }
-    }
-  }
-
-  &-light {
-    &,
-    a,
-    .alert-link {
-      color: $dark;
-    }
-  }
-}
-
-.badge {
-  &.bg-light {
-    color: $dark;
-  }
-}
-
-// Containers
-
-.list-group {
-  font-size: $font-size-sm;
-}
+@import "theme-rules";

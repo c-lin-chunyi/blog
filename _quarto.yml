@@ -33,12 +33,10 @@ format:
   html:
     theme:
       light:
-        - html/litera.scss
-        - brand
+        - html/light.scss
         - html/site.scss
       dark:
-        - html/litera-dark.scss
-        - brand
+        - html/dark.scss
         - html/site.scss
     respect-user-color-scheme: true
     css: styles.css
