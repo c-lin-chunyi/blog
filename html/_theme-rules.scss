@@ -1,8 +1,48 @@
 // Navbar
 
+#quarto-header {
+  background: $primary !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
 .navbar {
   font-size: $font-size-sm;
-  border: 1px solid $theme-navbar-border-color;
+  background-color: $primary !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  background-clip: border-box;
+}
+
+#quarto-header > nav.navbar {
+  background-color: $primary !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+#quarto-header .navbar-container,
+#quarto-header .navbar-collapse,
+#quarto-header .navbar-brand-container,
+#quarto-header .navbar-nav {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+#quarto-header::before,
+#quarto-header::after,
+#quarto-header > nav.navbar::before,
+#quarto-header > nav.navbar::after {
+  content: none;
+  display: none;
 }
 
 // Typography
