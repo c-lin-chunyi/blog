@@ -10,6 +10,7 @@ website:
   site-url: https://www.chunyi-lin.com # you must change this appropriately for RSS feeds to work properly
   title: "Chunyi Lin"
   navbar:
+    pinned: true
     right:
       - text: About
         href: index.qmd

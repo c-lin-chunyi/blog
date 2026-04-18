@@ -17,6 +17,11 @@
     font-family: var(--bs-body-font-family);
   }
 
+  .fingerprint {
+    font-family: var(--bs-font-monospace);
+    font-variant-numeric: tabular-nums;
+  }
+
   a {
     color: $blue;
     text-decoration: none;

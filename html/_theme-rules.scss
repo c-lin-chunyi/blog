@@ -8,6 +8,10 @@
   outline: 0 !important;
 }
 
+#quarto-header.headroom--unpinned {
+  transform: translateY(0%) !important;
+}
+
 .navbar {
   font-size: $font-size-sm;
   background-color: $primary !important;
