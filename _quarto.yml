@@ -12,11 +12,12 @@ website:
   title: "Chunyi Lin"
   navbar:
     pinned: true
-    right:
+    left:
       - text: About
         href: index.qmd
       - text: Posts
         href: posts/index.qmd
+    right:
       - icon: github
         href: https://github.com/c-lin-chunyi
       - icon: envelope

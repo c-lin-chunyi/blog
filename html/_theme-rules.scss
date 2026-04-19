@@ -49,6 +49,11 @@
   display: none;
 }
 
+// Put right-side navbar icons in one row in the hamburger menu.
+.navbar-nav.navbar-nav-scroll.ms-auto {
+  flex-direction: row;
+}
+
 // Title blocks
 
 #title-block-header.quarto-title-block .quarto-title-banner {
