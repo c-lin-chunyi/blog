@@ -3,76 +3,51 @@
     const selector = ".quarto-color-scheme-toggle";
     const toggleLabel = "Toggle light/dark switch";
 
-    const toggleColorSchemeWithoutScrollJump = function () {
-      if (!window.quartoToggleColorScheme) {
-        return;
-      }
+    let nativeScrollTo = null;
+    let uninstallTimer = null;
 
-      const x = window.scrollX;
-      const y = window.scrollY;
-      const originalScrollTo = window.scrollTo;
-
-      const guardedScrollTo = function () {
-        const targetX = typeof arguments[0] === "object" ? arguments[0].left : arguments[0];
-        const targetY = typeof arguments[0] === "object" ? arguments[0].top : arguments[1];
-
-        if (targetX === 0 && (targetY === 0 || targetY === 1)) {
-          return;
-        }
-
-        return originalScrollTo.apply(window, arguments);
+    function installFilter() {
+      if (nativeScrollTo) return; // re-entrancy guard
+      nativeScrollTo = window.scrollTo.bind(window);
+      window.scrollTo = function () {
+        const x = typeof arguments[0] === "object" ? arguments[0].left : arguments[0];
+        const y = typeof arguments[0] === "object" ? arguments[0].top  : arguments[1];
+        if (x === 0 && (y === 0 || y === 1)) return; // swallow Quarto's calls
+        return nativeScrollTo.apply(null, arguments);
       };
+    }
 
-      window.scrollTo = guardedScrollTo;
+    function scheduleUninstall() {
+      if (uninstallTimer) clearTimeout(uninstallTimer);
+      uninstallTimer = setTimeout(function () {
+        if (nativeScrollTo) { window.scrollTo = nativeScrollTo; nativeScrollTo = null; }
+        uninstallTimer = null;
+      }, 150);
+    }
 
-      try {
-        window.quartoToggleColorScheme();
-      } finally {
-        originalScrollTo.call(window, x, y);
-        window.requestAnimationFrame(function () {
-          originalScrollTo.call(window, x, y);
-        });
-        window.setTimeout(function () {
-          if (window.scrollTo === guardedScrollTo) {
-            window.scrollTo = originalScrollTo;
-          }
-          originalScrollTo.call(window, x, y);
-        }, 80);
-      }
-    };
-
-    window.document.addEventListener("DOMContentLoaded", function () {
-      window.document.querySelectorAll(selector).forEach(function (toggle) {
-        toggle.removeAttribute("href");
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(selector).forEach(function (toggle) {
+        toggle.removeAttribute("onclick");
+        toggle.onclick = null;
         toggle.setAttribute("role", "button");
-        toggle.setAttribute("tabindex", "0");
         toggle.setAttribute("title", toggleLabel);
         toggle.setAttribute("aria-label", toggleLabel);
       });
     });
 
-    window.document.addEventListener("click", function (event) {
+    document.addEventListener("click", function (event) {
       const toggle = event.target.closest(selector);
-      if (!toggle) {
-        return;
-      }
-
+      if (!toggle) return;
       event.preventDefault();
-      event.stopImmediatePropagation();
 
-      toggleColorSchemeWithoutScrollJump();
-    }, true);
-
-    window.document.addEventListener("keydown", function (event) {
-      const toggle = event.target.closest(selector);
-      if (!toggle || (event.key !== "Enter" && event.key !== " ")) {
-        return;
+      installFilter();
+      try {
+        if (typeof window.quartoToggleColorScheme === "function") {
+          window.quartoToggleColorScheme();
+        }
+      } finally {
+        scheduleUninstall();
       }
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      toggleColorSchemeWithoutScrollJump();
-    }, true);
+    });
   }());
 </script>
