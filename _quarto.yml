@@ -30,7 +30,7 @@ website:
       <span class="faux-block">{{< fa key >}} [PGP public key]({{< var pgp.key >}}) &emsp; {{< fa fingerprint >}} <strong>Fingerprint:</strong><br><span class="fingerprint">{{< var pgp.fingerprint >}}</span></span>
     right: |
       <span class="faux-block">Made with {{< fa brands r-project >}} and [Quarto](https://quarto.org/)</span>
-      <span class="faux-block">[View the source at {{< fa brands github >}} GitHub]({{< var github-url >}})</span>
+      <span class="faux-block">[View the source at {{< fa brands github >}} GitHub](https://github.com/c-lin-chunyi/blog)</span>
 format:
   html:
     theme:

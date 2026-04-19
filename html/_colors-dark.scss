@@ -4,104 +4,61 @@
 
 @import "vendor/radix-colors-3.0.0/scss/dark";
 
-$base:     $gray-1;
-$mantle:   $gray-2;
-$crust:    #0a0a0a;
-$surface0: $gray-3;
-$surface1: $gray-4;
-$surface2: $gray-5;
-$overlay0: $gray-8;
-$overlay1: $gray-9;
-$overlay2: $gray-10;
-$subtext0: $gray-11;
-$subtext1: $gray-11;
-$text:     $gray-12;
-
-$lavender: $indigo-9;
-$mauve:    $iris-9;
-$peach:    $orange-9;
-$sapphire: $blue-10;
-$sky:      $cyan-9;
-
 $white:    #fff;
-$gray-100: $text;
-$gray-200: $subtext1;
-$gray-300: $subtext0;
-$gray-400: $overlay2;
-$gray-500: $overlay1;
-$gray-600: $overlay0;
-$gray-700: $surface2;
-$gray-800: $surface1;
-$gray-900: $base;
+$gray-100: $gray-12;
+$gray-200: $gray-11;
+$gray-300: $gray-11;
+$gray-400: $gray-10;
+$gray-500: $gray-9;
+$gray-600: $gray-8;
+$gray-700: $gray-5;
+$gray-800: $gray-4;
+$gray-900: $gray-1;
 $gray:      $gray-600;
 $gray-dark: $gray-800;
 $black:    #000;
 
-$blue:    $blue-9;
-$indigo:  $lavender;
-$purple:  $mauve;
-$pink:    $pink-9;
-$red:     $red-9;
-$orange:  $peach;
-$yellow:  $amber-9;
-$green:   $green-9;
-$teal:    $teal-9;
-$cyan:    $sky;
+$primary:       $blue-9;
+$secondary:     $gray-9;
+$success:       $green-9;
+$info:          $cyan-9;
+$warning:       $amber-9;
+$danger:        $red-9;
+$light:         $gray-12;
+$dark:          $gray-1;
 
-$blue-text:        $blue-11;
-$blue-text-hover:  $blue-12;
-$indigo-text:      $indigo-11;
-$purple-text:      $iris-11;
-$pink-text:        $pink-11;
-$red-text:         $red-11;
-$orange-text:      $orange-11;
-$yellow-text:      $amber-11;
-$green-text:       $green-11;
-$teal-text:        $teal-11;
-$cyan-text:        $cyan-11;
-$primary-contrast: $black;
-
-$primary:       $blue;
-$secondary:     $overlay1;
-$success:       $green;
-$info:          $cyan;
-$warning:       $yellow;
-$danger:        $red;
-$light:         $text;
-$dark:          $base;
-
-$theme-surface-bg:            $surface0;
-$theme-control-bg:            $mantle;
-$theme-surface-active-bg:     $surface1;
+$theme-surface-bg:            $gray-3;
+$theme-control-bg:            $gray-2;
+$theme-surface-active-bg:     $gray-4;
 
 // Navbar and title block
 
 $navbar-bg: $theme-surface-bg;
 $title-block-banner-bg: $theme-surface-bg;
-$title-block-banner-color: $text;
+$title-block-banner-color: $gray-12;
 
 // Footer
 
-$footer-bg: $crust;
-$footer-fg: $subtext1;
-$footer-link-color: $blue-text;
-$footer-link-hover-color: $blue-text-hover;
+$footer-bg: #0a0a0a;
+$footer-fg: $gray-11;
+$footer-link-color: $blue-11;
+$footer-link-hover-color: $blue-12;
 
 // Body
 
-$body-bg:                   $base;
-$body-color:                $text;
-$body-secondary-color:      $subtext1;
+$body-bg:                   $gray-1;
+$body-color:                $gray-12;
+$body-secondary-color:      $gray-11;
 $body-tertiary-bg:          $theme-surface-bg;
-$border-color:              rgba($text, .14);
+$border-color:              rgba($gray-12, .14);
 
 // Links
 
-$link-color:                $blue-text;
-$link-hover-color:          $blue-text-hover;
+$link-color:                $blue-11;
+$link-hover-color:          $blue-12;
 
-$headings-color:              $text;
-$text-muted:                  $subtext0;
+$headings-color:              $gray-12;
+$text-muted:                  $gray-11;
 
 // Tables
 
@@ -114,18 +71,18 @@ $table-border-color:          $border-color;
 $input-bg:                            $theme-control-bg;
 $input-color:                         $body-color;
 $input-border-color:                  $border-color;
-$input-placeholder-color:             $overlay0;
-$input-group-addon-color:             $subtext0;
+$input-placeholder-color:             $gray-8;
+$input-group-addon-color:             $gray-11;
 $input-group-addon-bg:                $theme-surface-bg;
 
 $form-check-input-bg:                 $input-bg;
 $form-check-input-border:             1px solid $input-border-color;
-$form-feedback-valid-color:           $green-text;
-$form-feedback-invalid-color:         $red-text;
-$form-valid-color:                    $green-text;
-$form-invalid-color:                  $red-text;
-$form-valid-border-color:             $green;
-$form-invalid-border-color:           $red;
+$form-feedback-valid-color:           $green-11;
+$form-feedback-invalid-color:         $red-11;
+$form-valid-color:                    $green-11;
+$form-invalid-color:                  $red-11;
+$form-valid-border-color:             $green-9;
+$form-invalid-border-color:           $red-9;
 
 // Dropdowns
 
@@ -133,13 +90,13 @@ $dropdown-bg:                         $theme-surface-bg;
 $dropdown-border-color:               $border-color;
 $dropdown-divider-bg:                 $border-color;
 $dropdown-link-color:                 $body-color;
-$dropdown-link-hover-color:           $primary-contrast;
+$dropdown-link-hover-color:           $black;
 $dropdown-link-hover-bg:              $primary;
-$dropdown-link-active-color:          $primary-contrast;
+$dropdown-link-active-color:          $black;
 
 // Navs
 
-$nav-link-disabled-color:             $overlay0;
+$nav-link-disabled-color:             $gray-8;
 $nav-tabs-border-color:               $border-color;
 $nav-tabs-link-hover-border-color:    $border-color $border-color transparent;
 $nav-tabs-link-active-color:          $body-color;
@@ -195,19 +152,19 @@ $list-group-action-active-bg:         $body-bg;
 // Breadcrumbs
 
 $breadcrumb-bg:                       $theme-surface-bg;
-$breadcrumb-divider-color:            $overlay1;
-$breadcrumb-active-color:             $overlay1;
+$breadcrumb-divider-color:            $gray-9;
+$breadcrumb-active-color:             $gray-9;
 
 // Code
 
 $pre-color:                           inherit;
 $pre-bg:                              $theme-control-bg;
-$code-color:                          $pink-text;
+$code-color:                          $pink-11;
 $code-color-dark:                     $code-color;
 $code-bg:                             $theme-control-bg;
 
 // Shared theme color hooks
 
 $theme-navbar-border-color:           rgba(255, 255, 255, .12);
-$theme-lead-color:                    $subtext1;
+$theme-lead-color:                    $gray-11;
 $theme-alert-light-color:             $dark;

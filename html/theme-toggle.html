@@ -1,6 +1,7 @@
 <script>
   (function () {
     const selector = ".quarto-color-scheme-toggle";
+    const toggleLabel = "Toggle light/dark switch";
 
     const toggleColorSchemeWithoutScrollJump = function () {
       if (!window.quartoToggleColorScheme) {
@@ -42,14 +43,29 @@
 
     window.document.addEventListener("DOMContentLoaded", function () {
       window.document.querySelectorAll(selector).forEach(function (toggle) {
-        toggle.setAttribute("href", "javascript:void(0)");
+        toggle.removeAttribute("href");
         toggle.setAttribute("role", "button");
+        toggle.setAttribute("tabindex", "0");
+        toggle.setAttribute("title", toggleLabel);
+        toggle.setAttribute("aria-label", toggleLabel);
       });
     });
 
     window.document.addEventListener("click", function (event) {
       const toggle = event.target.closest(selector);
       if (!toggle) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      toggleColorSchemeWithoutScrollJump();
+    }, true);
+
+    window.document.addEventListener("keydown", function (event) {
+      const toggle = event.target.closest(selector);
+      if (!toggle || (event.key !== "Enter" && event.key !== " ")) {
         return;
       }
 
