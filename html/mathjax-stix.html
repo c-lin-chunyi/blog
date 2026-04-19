@@ -1,7 +1,13 @@
 <script>
 window.MathJax = {
+  loader: {
+    load: ["input/tex", "output/chtml"],
+    paths: {
+      "mathjax-stix2": "/html/vendor/mathjax-stix2-font-4.0.0"
+    }
+  },
   output: {
-    font: "mathjax-stix2"
+    font: "[mathjax-stix2]"
   }
 };
 </script>

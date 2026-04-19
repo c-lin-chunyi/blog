@@ -4,6 +4,7 @@ project:
   resources:
     - "pgp_clin.asc.txt"
     - "html/fonts/"
+    - "html/vendor/"
 
 website:
   description: "A blog built with Quarto"
@@ -40,9 +41,14 @@ format:
         - html/dark.scss
         - html/site.scss
     respect-user-color-scheme: true
-    css: styles.css
     html-math-method:
       method: mathjax
-      url: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.0.0/tex-chtml-nofont.min.js"
+      url: "html/vendor/mathjax-4.0.0/startup.js"
     include-in-header:
       - html/mathjax-stix.html
+    toc: false
+    code-link: true
+    anchor-sections: true
+    fig-cap-location: margin
+    reference-location: margin
+    footnotes-hover: true

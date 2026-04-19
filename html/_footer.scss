@@ -23,11 +23,11 @@
   }
 
   a {
-    color: $blue;
+    color: $footer-link-color;
     text-decoration: none;
 
     &:hover {
-      color: $cyan;
+      color: $footer-link-hover-color;
       text-decoration: underline;
     }
   }

@@ -1,7 +1,7 @@
 // Navbar
 
 #quarto-header {
-  background: $primary !important;
+  background: $navbar-bg !important;
   background-image: none !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -14,7 +14,7 @@
 
 .navbar {
   font-size: $font-size-sm;
-  background-color: $primary !important;
+  background-color: $navbar-bg !important;
   background-image: none !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -23,7 +23,7 @@
 }
 
 #quarto-header > nav.navbar {
-  background-color: $primary !important;
+  background-color: $navbar-bg !important;
   background-image: none !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -47,6 +47,17 @@
 #quarto-header > nav.navbar::after {
   content: none;
   display: none;
+}
+
+// Title blocks
+
+#title-block-header.quarto-title-block .quarto-title-banner {
+  background: $title-block-banner-bg;
+  color: $title-block-banner-color;
+}
+
+#title-block-header.quarto-title-block .quarto-title-banner a {
+  color: inherit;
 }
 
 // Typography
