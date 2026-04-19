@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "generate:radix-scss": "node scripts/generate-radix-scss.mjs"
+  },
+  "devDependencies": {
+    "@radix-ui/colors": "^3.0.0"
+  }
+}

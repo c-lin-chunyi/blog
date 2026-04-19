@@ -3,9 +3,12 @@
 
 $theme: "light" !default;
 
+@import "site-fonts";
 @import "colors-light";
 @import "theme-defaults";
 
 /*-- scss:rules --*/
 
 @import "theme-rules";
+@import "font-faces";
+@import "footer";

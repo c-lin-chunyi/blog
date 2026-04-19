@@ -1,0 +1,62 @@
+<script>
+  (function () {
+    const selector = ".quarto-color-scheme-toggle";
+
+    const toggleColorSchemeWithoutScrollJump = function () {
+      if (!window.quartoToggleColorScheme) {
+        return;
+      }
+
+      const x = window.scrollX;
+      const y = window.scrollY;
+      const originalScrollTo = window.scrollTo;
+
+      const guardedScrollTo = function () {
+        const targetX = typeof arguments[0] === "object" ? arguments[0].left : arguments[0];
+        const targetY = typeof arguments[0] === "object" ? arguments[0].top : arguments[1];
+
+        if (targetX === 0 && (targetY === 0 || targetY === 1)) {
+          return;
+        }
+
+        return originalScrollTo.apply(window, arguments);
+      };
+
+      window.scrollTo = guardedScrollTo;
+
+      try {
+        window.quartoToggleColorScheme();
+      } finally {
+        originalScrollTo.call(window, x, y);
+        window.requestAnimationFrame(function () {
+          originalScrollTo.call(window, x, y);
+        });
+        window.setTimeout(function () {
+          if (window.scrollTo === guardedScrollTo) {
+            window.scrollTo = originalScrollTo;
+          }
+          originalScrollTo.call(window, x, y);
+        }, 80);
+      }
+    };
+
+    window.document.addEventListener("DOMContentLoaded", function () {
+      window.document.querySelectorAll(selector).forEach(function (toggle) {
+        toggle.setAttribute("href", "javascript:void(0)");
+        toggle.setAttribute("role", "button");
+      });
+    });
+
+    window.document.addEventListener("click", function (event) {
+      const toggle = event.target.closest(selector);
+      if (!toggle) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      toggleColorSchemeWithoutScrollJump();
+    }, true);
+  }());
+</script>

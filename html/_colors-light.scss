@@ -1,8 +1,27 @@
 //
-// Light color system: Catppuccin Latte
+// Light color system: Radix Colors
 //
 
-@import "vendor/catppuccin-palette-1.8.0/scss/latte";
+@import "vendor/radix-colors-3.0.0/scss/light";
+
+$base:     $gray-1;
+$mantle:   $gray-2;
+$crust:    $gray-3;
+$surface0: $gray-3;
+$surface1: $gray-4;
+$surface2: $gray-5;
+$overlay0: $gray-8;
+$overlay1: $gray-9;
+$overlay2: $gray-10;
+$subtext0: $gray-10;
+$subtext1: $gray-11;
+$text:     $gray-12;
+
+$lavender: $indigo-9;
+$mauve:    $iris-9;
+$peach:    $orange-9;
+$sapphire: $blue-10;
+$sky:      $cyan-9;
 
 $white:    #fff;
 $gray-100: $base;
@@ -18,15 +37,15 @@ $gray:      $gray-600;
 $gray-dark: $gray-800;
 $black:    #000;
 
-$blue:    $blue;
+$blue:    $blue-9;
 $indigo:  $lavender;
 $purple:  $mauve;
-$pink:    $pink;
-$red:     $red;
+$pink:    $pink-9;
+$red:     $red-9;
 $orange:  $peach;
-$yellow:  $yellow;
-$green:   $green;
-$teal:    $teal;
+$yellow:  $amber-9;
+$green:   $green-9;
+$teal:    $teal-9;
 $cyan:    $sky;
 
 $primary:       $blue;
@@ -72,12 +91,98 @@ $link-hover-color:            $sapphire;
 
 // Tables
 
+$table-color:                 $body-color;
+$table-bg:                    $body-bg;
 $table-border-color:          $border-color;
 
 // Forms
 
-$input-border-color:          $border-color;
-$input-group-addon-bg:        $theme-surface-bg;
+$input-bg:                            $theme-control-bg;
+$input-color:                         $body-color;
+$input-border-color:                  $border-color;
+$input-placeholder-color:             $overlay0;
+$input-group-addon-color:             $subtext0;
+$input-group-addon-bg:                $theme-surface-bg;
+
+$form-check-input-bg:                 $input-bg;
+$form-check-input-border:             1px solid $input-border-color;
+
+// Dropdowns
+
+$dropdown-bg:                         $theme-surface-bg;
+$dropdown-border-color:               $border-color;
+$dropdown-divider-bg:                 $border-color;
+$dropdown-link-color:                 $body-color;
+$dropdown-link-hover-color:           $white;
+$dropdown-link-hover-bg:              $primary;
+
+// Navs
+
+$nav-link-disabled-color:             $overlay0;
+$nav-tabs-border-color:               $border-color;
+$nav-tabs-link-hover-border-color:    $border-color $border-color transparent;
+$nav-tabs-link-active-color:          $body-color;
+$nav-tabs-link-active-bg:             $body-bg;
+$nav-tabs-link-active-border-color:   $border-color $border-color transparent;
+
+// Navbar
+
+$navbar-dark-color:                   rgba($body-color, .72);
+$navbar-dark-hover-color:             $body-color;
+$navbar-light-color:                  rgba($body-color, .72);
+$navbar-light-hover-color:            $body-color;
+$navbar-light-active-color:           $body-color;
+$navbar-light-toggler-border-color:   $border-color;
+
+// Cards
+
+$card-bg:                             $theme-surface-bg;
+$card-border-color:                   $border-color;
+$card-cap-bg:                         $theme-surface-active-bg;
+
+// Popovers
+
+$popover-bg:                          $card-bg;
+$popover-border-color:                $border-color;
+$popover-header-bg:                   $card-cap-bg;
+
+// Toasts
+
+$toast-background-color:              $card-bg;
+$toast-border-color:                  $border-color;
+$toast-header-background-color:       $card-cap-bg;
+
+// Modals
+
+$modal-content-bg:                    $card-bg;
+$modal-content-border-color:          $border-color;
+$modal-header-border-color:           $border-color;
+
+// Progress bars
+
+$progress-bg:                         $theme-surface-active-bg;
+
+// List group
+
+$list-group-color:                    $body-color;
+$list-group-bg:                       $card-bg;
+$list-group-border-color:             $border-color;
+$list-group-hover-bg:                 $theme-surface-active-bg;
+$list-group-action-hover-color:       $list-group-color;
+$list-group-action-active-bg:         $body-bg;
+
+// Breadcrumbs
+
+$breadcrumb-bg:                       $theme-surface-bg;
+$breadcrumb-divider-color:            $overlay1;
+$breadcrumb-active-color:             $overlay1;
+
+// Code
+
+$pre-color:                           inherit;
+$pre-bg:                              $theme-control-bg;
+$code-color:                          $pink;
+$code-bg:                             $theme-control-bg;
 
 // Shared theme color hooks
 

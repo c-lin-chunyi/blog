@@ -1,8 +1,27 @@
 //
-// Dark color system: Catppuccin Mocha
+// Dark color system: Radix Colors
 //
 
-@import "vendor/catppuccin-palette-1.8.0/scss/mocha";
+@import "vendor/radix-colors-3.0.0/scss/dark";
+
+$base:     $gray-1;
+$mantle:   $gray-2;
+$crust:    #0a0a0a;
+$surface0: $gray-3;
+$surface1: $gray-4;
+$surface2: $gray-5;
+$overlay0: $gray-8;
+$overlay1: $gray-9;
+$overlay2: $gray-10;
+$subtext0: $gray-10;
+$subtext1: $gray-11;
+$text:     $gray-12;
+
+$lavender: $indigo-9;
+$mauve:    $iris-9;
+$peach:    $orange-9;
+$sapphire: $blue-10;
+$sky:      $cyan-9;
 
 $white:    #fff;
 $gray-100: $text;
@@ -18,15 +37,15 @@ $gray:      $gray-600;
 $gray-dark: $gray-800;
 $black:    #000;
 
-$blue:    $blue;
+$blue:    $blue-9;
 $indigo:  $lavender;
 $purple:  $mauve;
-$pink:    $pink;
-$red:     $red;
+$pink:    $pink-9;
+$red:     $red-9;
 $orange:  $peach;
-$yellow:  $yellow;
-$green:   $green;
-$teal:    $teal;
+$yellow:  $amber-9;
+$green:   $green-9;
+$teal:    $teal-9;
 $cyan:    $sky;
 
 $primary:       $blue;
@@ -110,10 +129,10 @@ $nav-tabs-link-active-border-color:   $border-color $border-color transparent;
 // Navbar
 
 $navbar-dark-color:                   rgba($body-color, .72);
-$navbar-dark-hover-color:             $white;
+$navbar-dark-hover-color:             $body-color;
 $navbar-light-color:                  rgba($body-color, .72);
-$navbar-light-hover-color:            $white;
-$navbar-light-active-color:           $white;
+$navbar-light-hover-color:            $body-color;
+$navbar-light-active-color:           $body-color;
 $navbar-light-toggler-border-color:   $border-color;
 
 // Cards
@@ -164,6 +183,7 @@ $breadcrumb-active-color:             $overlay1;
 $pre-color:                           inherit;
 $pre-bg:                              $theme-control-bg;
 $code-color:                          $pink;
+$code-color-dark:                     $code-color;
 $code-bg:                             $theme-control-bg;
 
 // Shared theme color hooks
