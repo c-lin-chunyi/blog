@@ -1,71 +1,75 @@
 //
-// Dark color system
+// Dark color system: Catppuccin Mocha
 //
 
-$white:    #fff !default;
-$gray-100: #f8f9fa !default;
-$gray-200: #e9ecef !default;
-$gray-300: #dee2e6 !default;
-$gray-400: #ced4da !default;
-$gray-500: #adb5bd !default;
-$gray-600: #8e98a3;
-$gray-700: #495057;
-$gray-800: #2b3138;
-$gray-900: #171b20;
-$black:    #000 !default;
+@import "vendor/catppuccin-palette-1.8.0/scss/mocha";
 
-$blue:    #7aabff !default;
-$indigo:  #8e6bf2 !default;
-$purple:  #a584dc !default;
-$pink:    #f172ac !default;
-$red:     #f27a75 !default;
-$orange:  #ff9d4a !default;
-$yellow:  #f6c86a !default;
-$green:   #38d99a !default;
-$teal:    #4fd6b8 !default;
-$cyan:    #55c7dc !default;
+$white:    #fff;
+$gray-100: $text;
+$gray-200: $subtext1;
+$gray-300: $subtext0;
+$gray-400: $overlay2;
+$gray-500: $overlay1;
+$gray-600: $overlay0;
+$gray-700: $surface2;
+$gray-800: $surface1;
+$gray-900: $base;
+$gray:      $gray-600;
+$gray-dark: $gray-800;
+$black:    #000;
 
-$primary:       $blue !default;
-$secondary:     $gray-500 !default;
-$success:       $green !default;
-$info:          $cyan !default;
-$warning:       $yellow !default;
-$danger:        $red !default;
-$light:         $gray-200 !default;
-$dark:          $gray-900;
+$blue:    $blue;
+$indigo:  $lavender;
+$purple:  $mauve;
+$pink:    $pink;
+$red:     $red;
+$orange:  $peach;
+$yellow:  $yellow;
+$green:   $green;
+$teal:    $teal;
+$cyan:    $sky;
 
-$theme-surface-bg:            #20262d;
-$theme-control-bg:            #111418;
-$theme-surface-active-bg:     #252c34;
+$primary:       $blue;
+$secondary:     $overlay1;
+$success:       $green;
+$info:          $cyan;
+$warning:       $yellow;
+$danger:        $red;
+$light:         $text;
+$dark:          $base;
+
+$theme-surface-bg:            $surface0;
+$theme-control-bg:            $mantle;
+$theme-surface-active-bg:     $surface1;
 
 // Navbar and title block
 
 $navbar-bg: $theme-surface-bg;
 $title-block-banner-bg: $theme-surface-bg;
-$title-block-banner-color: $gray-100;
+$title-block-banner-color: $text;
 
 // Footer
 
-$footer-bg: $black !default;
-$footer-fg: $gray-500 !default;
-$footer-link-color: $blue !default;
-$footer-link-hover-color: $cyan !default;
+$footer-bg: $crust;
+$footer-fg: $subtext1;
+$footer-link-color: $blue;
+$footer-link-hover-color: $sapphire;
 
 // Body
 
-$body-bg:                   $gray-900;
-$body-color:                $gray-200;
-$body-secondary-color:      $gray-500;
+$body-bg:                   $base;
+$body-color:                $text;
+$body-secondary-color:      $subtext1;
 $body-tertiary-bg:          $theme-surface-bg;
-$border-color:              rgba(255, 255, 255, .14);
+$border-color:              rgba($text, .14);
 
 // Links
 
 $link-color:                $primary;
-$link-hover-color:          lighten($primary, 8%);
+$link-hover-color:          $sapphire;
 
-$headings-color:              $gray-100;
-$text-muted:                  $gray-500;
+$headings-color:              $text;
+$text-muted:                  $subtext0;
 
 // Tables
 
@@ -78,8 +82,8 @@ $table-border-color:          $border-color;
 $input-bg:                            $theme-control-bg;
 $input-color:                         $body-color;
 $input-border-color:                  $border-color;
-$input-placeholder-color:             $gray-600;
-$input-group-addon-color:             $gray-300;
+$input-placeholder-color:             $overlay0;
+$input-group-addon-color:             $subtext0;
 $input-group-addon-bg:                $theme-surface-bg;
 
 $form-check-input-bg:                 $input-bg;
@@ -96,7 +100,7 @@ $dropdown-link-hover-bg:              $primary;
 
 // Navs
 
-$nav-link-disabled-color:             $gray-600;
+$nav-link-disabled-color:             $overlay0;
 $nav-tabs-border-color:               $border-color;
 $nav-tabs-link-hover-border-color:    $border-color $border-color transparent;
 $nav-tabs-link-active-color:          $body-color;
@@ -152,8 +156,8 @@ $list-group-action-active-bg:         $body-bg;
 // Breadcrumbs
 
 $breadcrumb-bg:                       $theme-surface-bg;
-$breadcrumb-divider-color:            $gray-500;
-$breadcrumb-active-color:             $gray-500;
+$breadcrumb-divider-color:            $overlay1;
+$breadcrumb-active-color:             $overlay1;
 
 // Code
 
@@ -165,5 +169,5 @@ $code-bg:                             $theme-control-bg;
 // Shared theme color hooks
 
 $theme-navbar-border-color:           rgba(255, 255, 255, .12);
-$theme-lead-color:                    $gray-500;
+$theme-lead-color:                    $subtext1;
 $theme-alert-light-color:             $dark;

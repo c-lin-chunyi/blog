@@ -1,69 +1,86 @@
 //
-// Light color system
+// Light color system: Catppuccin Latte
 //
 
-$white:    #fff !default;
-$gray-100: #f8f9fa !default;
-$gray-200: #e9ecef !default;
-$gray-300: #ddd !default;
-$gray-400: #ced4da !default;
-$gray-500: #adb5bd !default;
-$gray-600: #868e96 !default;
-$gray-700: #495057 !default;
-$gray-800: #343a40 !default;
-$gray-900: #212529 !default;
-$black:    #000 !default;
+@import "vendor/catppuccin-palette-1.8.0/scss/latte";
 
-$blue:    #4582ec !default;
-$indigo:  #6610f2 !default;
-$purple:  #6f42c1 !default;
-$pink:    #e83e8c !default;
-$red:     #d9534f !default;
-$orange:  #fd7e14 !default;
-$yellow:  #f0ad4e !default;
-$green:   #02b875 !default;
-$teal:    #20c997 !default;
-$cyan:    #17a2b8 !default;
+$white:    #fff;
+$gray-100: $base;
+$gray-200: $mantle;
+$gray-300: $crust;
+$gray-400: $surface0;
+$gray-500: $overlay0;
+$gray-600: $overlay1;
+$gray-700: $overlay2;
+$gray-800: $subtext0;
+$gray-900: $text;
+$gray:      $gray-600;
+$gray-dark: $gray-800;
+$black:    #000;
 
-$primary:       $blue !default;
-$secondary:     $gray-500 !default;
-$success:       $green !default;
-$info:          $cyan !default;
-$warning:       $yellow !default;
-$danger:        $red !default;
-$light:         $gray-100 !default;
-$dark:          $gray-800 !default;
+$blue:    $blue;
+$indigo:  $lavender;
+$purple:  $mauve;
+$pink:    $pink;
+$red:     $red;
+$orange:  $peach;
+$yellow:  $yellow;
+$green:   $green;
+$teal:    $teal;
+$cyan:    $sky;
+
+$primary:       $blue;
+$secondary:     $overlay1;
+$success:       $green;
+$info:          $cyan;
+$warning:       $yellow;
+$danger:        $red;
+$light:         $base;
+$dark:          $text;
+
+$theme-surface-bg:            $mantle;
+$theme-control-bg:            $base;
+$theme-surface-active-bg:     $surface0;
 
 // Navbar and title block
 
-$navbar-bg: $primary !default;
-$title-block-banner-bg: $primary !default;
-$title-block-banner-color: $white !default;
+$navbar-bg: $theme-surface-bg;
+$title-block-banner-bg: $theme-surface-bg;
+$title-block-banner-color: $text;
 
 // Footer
 
-$footer-bg: $gray-900 !default;
-$footer-fg: $gray-300 !default;
-$footer-link-color: $blue !default;
-$footer-link-hover-color: $cyan !default;
+$footer-bg: $crust;
+$footer-fg: $subtext1;
+$footer-link-color: $blue;
+$footer-link-hover-color: $sapphire;
 
 // Body
 
-$body-color:                  $black;
-$border-color:                rgba(0, 0, 0, .1) !default;
-$headings-color:              $black;
+$body-bg:                     $base;
+$body-color:                  $text;
+$body-secondary-color:        $subtext1;
+$body-tertiary-bg:            $theme-surface-bg;
+$border-color:                rgba($text, .16);
+$headings-color:              $text;
+$text-muted:                  $subtext0;
+
+// Links
+
+$link-color:                  $primary;
+$link-hover-color:            $sapphire;
 
 // Tables
 
-$table-border-color:          $border-color !default;
+$table-border-color:          $border-color;
 
 // Forms
 
-$input-border-color:          $border-color !default;
-$input-group-addon-bg:        $gray-200 !default;
+$input-border-color:          $border-color;
+$input-group-addon-bg:        $theme-surface-bg;
 
 // Shared theme color hooks
 
-$theme-navbar-border-color:   $border-color !default;
-$theme-lead-color:            $gray-600 !default;
-$theme-alert-light-color:     $body-color !default;
+$theme-navbar-border-color:   $border-color;
+$theme-lead-color:            $subtext1;
+$theme-alert-light-color:     $body-color;
