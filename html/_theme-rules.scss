@@ -145,6 +145,14 @@ table,
   }
 }
 
+.btn-success,
+.btn-warning {
+  --bs-btn-color: #{$black};
+  --bs-btn-hover-color: #{$black};
+  --bs-btn-active-color: #{$black};
+  --bs-btn-disabled-color: #{$black};
+}
+
 // Containers
 
 .list-group {

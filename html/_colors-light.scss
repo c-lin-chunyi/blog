@@ -13,7 +13,7 @@ $surface2: $gray-5;
 $overlay0: $gray-8;
 $overlay1: $gray-9;
 $overlay2: $gray-10;
-$subtext0: $gray-10;
+$subtext0: $gray-11;
 $subtext1: $gray-11;
 $text:     $gray-12;
 
@@ -48,6 +48,19 @@ $green:   $green-9;
 $teal:    $teal-9;
 $cyan:    $sky;
 
+$blue-text:        $blue-11;
+$blue-text-hover:  $blue-12;
+$indigo-text:      $indigo-11;
+$purple-text:      $iris-11;
+$pink-text:        $pink-11;
+$red-text:         $red-11;
+$orange-text:      $orange-11;
+$yellow-text:      $amber-11;
+$green-text:       $green-11;
+$teal-text:        $teal-11;
+$cyan-text:        $cyan-11;
+$primary-contrast: $black;
+
 $primary:       $blue;
 $secondary:     $overlay1;
 $success:       $green;
@@ -71,8 +84,8 @@ $title-block-banner-color: $text;
 
 $footer-bg: $crust;
 $footer-fg: $subtext1;
-$footer-link-color: $blue;
-$footer-link-hover-color: $sapphire;
+$footer-link-color: $blue-text;
+$footer-link-hover-color: $blue-text-hover;
 
 // Body
 
@@ -86,8 +99,8 @@ $text-muted:                  $subtext0;
 
 // Links
 
-$link-color:                  $primary;
-$link-hover-color:            $sapphire;
+$link-color:                  $blue-text;
+$link-hover-color:            $blue-text-hover;
 
 // Tables
 
@@ -106,6 +119,12 @@ $input-group-addon-bg:                $theme-surface-bg;
 
 $form-check-input-bg:                 $input-bg;
 $form-check-input-border:             1px solid $input-border-color;
+$form-feedback-valid-color:           $green-text;
+$form-feedback-invalid-color:         $red-text;
+$form-valid-color:                    $green-text;
+$form-invalid-color:                  $red-text;
+$form-valid-border-color:             $green;
+$form-invalid-border-color:           $red;
 
 // Dropdowns
 
@@ -113,8 +132,9 @@ $dropdown-bg:                         $theme-surface-bg;
 $dropdown-border-color:               $border-color;
 $dropdown-divider-bg:                 $border-color;
 $dropdown-link-color:                 $body-color;
-$dropdown-link-hover-color:           $white;
+$dropdown-link-hover-color:           $primary-contrast;
 $dropdown-link-hover-bg:              $primary;
+$dropdown-link-active-color:          $primary-contrast;
 
 // Navs
 
@@ -181,7 +201,7 @@ $breadcrumb-active-color:             $overlay1;
 
 $pre-color:                           inherit;
 $pre-bg:                              $theme-control-bg;
-$code-color:                          $pink;
+$code-color:                          $pink-text;
 $code-bg:                             $theme-control-bg;
 
 // Shared theme color hooks
