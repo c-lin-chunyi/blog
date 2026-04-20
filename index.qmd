@@ -1,20 +1,49 @@
 ---
-title: "About"
+title: "Chunyi Lin"
+subtitle: "[Department of Psychology and Behavioral Sciences, Zhejiang University](http://www.psych.zju.edu.cn/psychen/27667/list.htm)"
 about:
-  template: jolla
+  template: solana
   links:
-    - icon: bluesky
-      text: Bluesky
-      href: https://bsky.app/
+    - icon: envelope
+      text: Personal Email
+      href: mailto:c.lin.chunyi@gmail.com
+    - icon: envelope-at
+      text: University Email
+      href: mailto:linchunyi@zju.edu.cn
     - icon: linkedin
       text: LinkedIn
-      href: https://linkedin.com
+      href: https://www.linkedin.com/in/chunyi-lin-630945380/
     - icon: github
       text: Github
-      href: https://github.com
+      href: https://github.com/c-lin-chunyi
 
 ---
 
-About this blog
+### About Me
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem.
+I am a second-year undergraduate student at Zhejiang University, majoring in Psychology 
+(expected graduation: June 2028).
+
+My research interests lie in cognitive science, particularly psychophysical methods, 
+SSVEP, and computational modeling.
+
+---
+
+### Research Experience
+
+I am currently working with [Prof. Yongchun Cai](https://person.zju.edu.cn/en/yongchunai_en) 
+on *the effect of 40 Hz visual stimulation on early-stage visual inhibitory 
+processing in healthy adults*.
+
+I am also a remote research assistant in [Prof. Zhuo Han](http://bnupsych.bnu.edu.cn/tabid/324/ArticleID/4993/frtid/307/Default.aspx)'s 
+lab at Beijing Normal University, where I contribute to a CBT project for secondary school 
+students and an fNIRS project using R and MATLAB for data analysis and machine learning.
+
+You can find more details in my [CV](https://www.chunyi-lin.com/cv/).
+
+---
+
+### What You Can Find on This Website
+
+This website hosts my research projects, some technical notes, and a few personal essays 
+in which I share thoughts on philosophy, psychology, metascience, and other topics.
