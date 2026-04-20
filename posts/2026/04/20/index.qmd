@@ -1,6 +1,6 @@
 ---
-title: "Post With Code"
-date: "2026-04-18"
+title: "Setting Up a Website with Quarto"
+date: "2026-04-20"
 categories: [example]
 ---
 

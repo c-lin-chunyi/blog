@@ -2,6 +2,8 @@
 
 # Date format
 date-format: "dddd, MMMM D, YYYY"
+date-modified: last-modified
+modified-title: Last updated
 
 # Freeze computational output
 freeze: true
