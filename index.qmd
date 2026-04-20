@@ -1,5 +1,6 @@
 ---
 title: "Chunyi Lin"
+pagetitle: "Chunyi Lin"
 subtitle: "[Department of Psychology and Behavioral Sciences, Zhejiang University](http://www.psych.zju.edu.cn/psychen/27667/list.htm)"
 about:
   template: solana

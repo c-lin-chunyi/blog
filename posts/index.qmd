@@ -3,7 +3,7 @@ title: "Welcome To My Blog"
 author: ""
 listing:
   contents: "*/index.qmd"
-  fields: [date, title, description, categories, image]
+  fields: [title, description, categories, image]
   feed: true
   sort: "date desc"
   type: default
@@ -13,4 +13,5 @@ listing:
 page-layout: full
 title-block-banner: true
 code-tools: false
+date-modified: ""
 ---

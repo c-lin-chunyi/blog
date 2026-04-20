@@ -1,12 +1,7 @@
 # Options specified here will apply to all posts in this folder
 
-# Date format
-date-format: "dddd, MMMM D, YYYY"
 date-modified: last-modified
 modified-title: Last updated
-
-# Freeze computational output
-freeze: true
 
 # Enable banner style title blocks
 title-block-banner: true

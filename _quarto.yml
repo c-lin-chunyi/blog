@@ -6,10 +6,23 @@ project:
     - "html/fonts/"
     - "html/vendor/"
 
+freeze: auto
+
+pagetitle: "{{< meta title >}} | Chunyi Lin"
+author-meta: "Chunyi Lin"
+
+# Date format
+date-format: "dddd, MMMM D, YYYY"
+
 website:
-  description: "A blog built with Quarto"
-  site-url: https://www.chunyi-lin.com # you must change this appropriately for RSS feeds to work properly
+  description: "Chunyi Lin is an undergraduate psychology student at Zhejiang University, with his research interests in cognitive sciences."
+  favicon: favicon.svg
+  site-url: https://www.chunyi-lin.com
+  repo-url: "https://github.com/c-lin-chunyi/blog"
   title: "Chunyi Lin"
+
+  llms-txt: true
+
   navbar:
     pinned: true
     left:
@@ -19,6 +32,8 @@ website:
         href: cv/index.qmd
       - text: Posts
         href: posts/index.qmd
+      - text: AI Usage Disclosure
+        href: ai/index.qmd
     right:
       - icon: github
         href: https://github.com/c-lin-chunyi
@@ -34,6 +49,7 @@ website:
     right: |
       <span class="faux-block">Made with {{< fa brands r-project >}} and [Quarto](https://quarto.org/)</span>
       <span class="faux-block">[View the source at {{< fa brands github >}} GitHub](https://github.com/c-lin-chunyi/blog)</span>
+
 format:
   html:
     theme:
@@ -45,9 +61,6 @@ format:
       url: "html/vendor/mathjax-4.0.0/startup.js"
     include-in-header:
       - html/mathjax-stix.html
-      - text: |
-          <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-          <link rel="shortcut icon" href="/favicon.svg">
     include-after-body:
       - html/theme-toggle.html
     toc: false
