@@ -20,7 +20,9 @@ Proin vehicula posuere risus, vitae iaculis dui dictum et. Integer accumsan, lac
 
 $$1+1=2$$
 
-$$E=mc^2$$
+$$
+E=m c^2
+$$
 
 $$
 \begin{pmatrix}
