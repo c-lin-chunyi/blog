@@ -1,6 +1,8 @@
 {
   "private": true,
   "scripts": {
+    "build": "npm run generate:radix-scss && quarto render",
+    "deploy:cloudflare": "scripts/deploy-cloudflare-pages.sh",
     "generate:radix-scss": "node scripts/generate-radix-scss.mjs"
   },
   "devDependencies": {
