@@ -1,509 +1,102 @@
 <style>
-  /* Toggle icons adapted from Lucide (ISC): sun-medium and moon-star. */
   .quarto-color-scheme-toggle {
     display: none !important;
   }
 
-  .theme-mode-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
-    border: 0;
+  #theme-select {
+    width: 100%;
+    max-width: 12rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid currentColor;
+    border-radius: 0.375rem;
     background: transparent;
-    color: var(--quarto-scss-export-navbar-fg, inherit);
+    color: inherit;
     font: inherit;
-    font-size: 1rem;
-    line-height: 1;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    transition: color 120ms ease;
-  }
-
-  .theme-mode-button:hover,
-  .theme-mode-button:focus-visible {
-    color: var(--quarto-scss-export-navbar-hover-color, var(--quarto-scss-export-navbar-hl, inherit));
-  }
-
-  .theme-mode-button:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-    border-radius: 0.25rem;
-  }
-
-  .theme-mode-button svg {
-    display: block;
-    width: 1.16em;
-    height: 1.16em;
-    transform: translateY(0.02em);
-  }
-
-  :root {
-    color-scheme: light dark;
-  }
-
-  :root.theme-mode-transition body,
-  :root.theme-mode-transition #quarto-header,
-  :root.theme-mode-transition .navbar,
-  :root.theme-mode-transition .nav-footer,
-  :root.theme-mode-transition .quarto-title-banner,
-  :root.theme-mode-transition .theme-mode-button,
-  :root.theme-mode-transition .nav-link,
-  :root.theme-mode-transition .navbar-brand,
-  :root.theme-mode-transition a,
-  :root.theme-mode-transition button,
-  :root.theme-mode-transition input,
-  :root.theme-mode-transition textarea,
-  :root.theme-mode-transition select,
-  :root.theme-mode-transition pre,
-  :root.theme-mode-transition code,
-  :root.theme-mode-transition kbd,
-  :root.theme-mode-transition blockquote,
-  :root.theme-mode-transition table,
-  :root.theme-mode-transition th,
-  :root.theme-mode-transition td,
-  :root.theme-mode-transition .card,
-  :root.theme-mode-transition .list-group-item,
-  :root.theme-mode-transition .dropdown-menu,
-  :root.theme-mode-transition .alert,
-  :root.theme-mode-transition .badge,
-  :root.theme-mode-transition .btn,
-  :root.theme-mode-transition svg,
-  :root.theme-mode-transition svg * {
-    transition:
-      color 180ms ease,
-      background-color 180ms ease,
-      border-color 180ms ease,
-      fill 180ms ease,
-      stroke 180ms ease,
-      box-shadow 180ms ease;
-  }
-
-  iframe.giscus-frame {
-    transition: opacity 180ms ease;
-  }
-
-  iframe.giscus-frame.giscus-theme-syncing {
-    opacity: 0.35;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-      animation-duration: 140ms;
-      animation-timing-function: ease;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    :root.theme-mode-transition body,
-    :root.theme-mode-transition #quarto-header,
-    :root.theme-mode-transition .navbar,
-    :root.theme-mode-transition .nav-footer,
-    :root.theme-mode-transition .quarto-title-banner,
-    :root.theme-mode-transition .theme-mode-button,
-    :root.theme-mode-transition .nav-link,
-    :root.theme-mode-transition .navbar-brand,
-    :root.theme-mode-transition a,
-    :root.theme-mode-transition button,
-    :root.theme-mode-transition input,
-    :root.theme-mode-transition textarea,
-    :root.theme-mode-transition select,
-    :root.theme-mode-transition pre,
-    :root.theme-mode-transition code,
-    :root.theme-mode-transition kbd,
-    :root.theme-mode-transition blockquote,
-    :root.theme-mode-transition table,
-    :root.theme-mode-transition th,
-    :root.theme-mode-transition td,
-    :root.theme-mode-transition .card,
-    :root.theme-mode-transition .list-group-item,
-    :root.theme-mode-transition .dropdown-menu,
-    :root.theme-mode-transition .alert,
-    :root.theme-mode-transition .badge,
-    :root.theme-mode-transition .btn,
-    :root.theme-mode-transition svg,
-    :root.theme-mode-transition svg * {
-      transition: none;
-    }
-
-    iframe.giscus-frame {
-      transition: none;
-    }
   }
 </style>
 
 <script>
   (function () {
-    const quartoStorageKey = "quarto-color-scheme";
-    const preferenceStorageKey = "theme-mode-preference";
-    const preferenceTtlMs = 30 * 60 * 1000;
-    const builtInToggleSelector = ".quarto-color-scheme-toggle";
-    const customToggleSelector = ".theme-mode-button";
-    const giscusFrameSelector = "iframe.giscus-frame";
-    const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const root = document.documentElement;
+    const STORAGE_KEY = "theme-preference";
+    const LEGACY_KEYS = ["quarto-color-scheme", "theme-mode-preference"];
+    const DARK_MEDIA = window.matchMedia("(prefers-color-scheme: dark)");
 
-    let manualAlternate = null;
-    let activeAlternate = null;
-    let trackedGiscusFrame = null;
-    let giscusFadeTimeoutId = null;
-    let giscusSyncToken = 0;
-    let themeTransitionCleanupId = null;
-    let colorSchemeBootstrapObserver = null;
-    let navbarBootstrapObserver = null;
-    let customToggleInitialized = false;
-
-    const sunMediumIcon = [
-      '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"',
-      ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">',
-      '<circle cx="12" cy="12" r="4"></circle>',
-      '<path d="M12 3v1"></path>',
-      '<path d="M12 20v1"></path>',
-      '<path d="M3 12h1"></path>',
-      '<path d="M20 12h1"></path>',
-      '<path d="m18.364 5.636-.707.707"></path>',
-      '<path d="m6.343 17.657-.707.707"></path>',
-      '<path d="m5.636 5.636.707.707"></path>',
-      '<path d="m17.657 17.657.707.707"></path>',
-      '</svg>'
-    ].join("");
-
-    const moonStarIcon = [
-      '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"',
-      ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">',
-      '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"></path>',
-      '<path d="M19 3v4"></path>',
-      '<path d="M21 5h-4"></path>',
-      '</svg>'
-    ].join("");
-
-    function clearStoredPreference() {
+    function clearLegacyKeys() {
       try {
-        window.localStorage.removeItem(preferenceStorageKey);
-      } catch (_) {
-        // Ignore storage access failures and continue without persistence.
-      }
+        LEGACY_KEYS.forEach(function (key) {
+          window.localStorage.removeItem(key);
+        });
+      } catch (_) {}
     }
 
-    function readStoredPreference() {
-      try {
-        window.localStorage.removeItem(quartoStorageKey);
-        const raw = window.localStorage.getItem(preferenceStorageKey);
-        if (!raw) return null;
+    function readThemePreference() {
+      clearLegacyKeys();
 
-        const parsed = JSON.parse(raw);
-        if (
-          typeof parsed !== "object" ||
-          parsed === null ||
-          typeof parsed.alternate !== "boolean" ||
-          typeof parsed.expiresAt !== "number"
-        ) {
-          clearStoredPreference();
-          return null;
+      try {
+        const value = window.localStorage.getItem(STORAGE_KEY);
+        if (value === "light" || value === "dark" || value === "system") {
+          return value;
         }
-
-        if (Date.now() > parsed.expiresAt) {
-          clearStoredPreference();
-          return null;
+        if (value !== null) {
+          window.localStorage.removeItem(STORAGE_KEY);
         }
+      } catch (_) {}
 
-        return parsed.alternate;
-      } catch (_) {
-        clearStoredPreference();
-        return null;
-      }
+      return "system";
     }
 
-    function writeStoredPreference(alternate) {
-      try {
-        window.localStorage.setItem(
-          preferenceStorageKey,
-          JSON.stringify({
-            alternate: alternate,
-            expiresAt: Date.now() + preferenceTtlMs
-          })
-        );
-      } catch (_) {
-        // Ignore storage access failures and continue without persistence.
-      }
+    function resolveTheme(pref) {
+      if (pref === "light" || pref === "dark") return pref;
+      return DARK_MEDIA.matches ? "dark" : "light";
     }
 
-    function getPreferredAlternate() {
-      const storedPreference = readStoredPreference();
-      if (storedPreference !== null) {
-        manualAlternate = storedPreference;
-        return storedPreference;
-      }
-
-      manualAlternate = null;
-      return systemThemeQuery.matches;
-    }
-
-    function setDocumentColorScheme(alternate) {
-      root.style.colorScheme = alternate ? "dark" : "light";
-      root.dataset.themeMode = alternate ? "dark" : "light";
-    }
-
-    function setBodyClasses(alternate) {
-      const body = document.body;
-      if (!body) return;
-
-      body.classList.toggle("quarto-dark", alternate);
-      body.classList.toggle("quarto-light", !alternate);
-    }
-
-    function clearThemeTransitionState() {
-      root.classList.remove("theme-mode-transition");
-      if (themeTransitionCleanupId !== null) {
-        window.clearTimeout(themeTransitionCleanupId);
-        themeTransitionCleanupId = null;
-      }
-    }
-
-    function startThemeTransitionState() {
-      if (reducedMotionQuery.matches) {
-        clearThemeTransitionState();
-        return;
-      }
-
-      clearThemeTransitionState();
-      root.classList.add("theme-mode-transition");
-      themeTransitionCleanupId = window.setTimeout(clearThemeTransitionState, 260);
-    }
-
-    function toggleStylesheets(alternate) {
-      const primarySheets = document.querySelectorAll(
-        "link.quarto-color-scheme:not(.quarto-color-alternate)"
-      );
-      const alternateSheets = document.querySelectorAll(
-        "link.quarto-color-scheme.quarto-color-alternate"
-      );
-
-      primarySheets.forEach(function (sheet) {
-        if (sheet.rel !== "stylesheet") {
+    function applyTheme(resolved) {
+      document
+        .querySelectorAll("link.quarto-color-scheme:not(.quarto-color-alternate)")
+        .forEach(function (sheet) {
           sheet.rel = "stylesheet";
-        }
-      });
-
-      alternateSheets.forEach(function (sheet) {
-        sheet.rel = alternate ? "stylesheet" : "disabled-stylesheet";
-      });
-
-      return primarySheets.length + alternateSheets.length > 0;
-    }
-
-    function primeInitialColorScheme() {
-      const alternate = getPreferredAlternate();
-      activeAlternate = alternate;
-      setDocumentColorScheme(alternate);
-      const appliedToStylesheets = toggleStylesheets(alternate);
-      setBodyClasses(alternate);
-
-      if (appliedToStylesheets || colorSchemeBootstrapObserver) return;
-
-      colorSchemeBootstrapObserver = new MutationObserver(function () {
-        if (!toggleStylesheets(alternate)) return;
-        colorSchemeBootstrapObserver.disconnect();
-        colorSchemeBootstrapObserver = null;
-      });
-
-      colorSchemeBootstrapObserver.observe(root, {
-        childList: true,
-        subtree: true
-      });
-    }
-
-    function setGiscusThemeInputs(alternate) {
-      const baseTheme = document.querySelector("#giscus-base-theme");
-      const alternateTheme = document.querySelector("#giscus-alt-theme");
-      if (!baseTheme || !alternateTheme) return null;
-
-      const nextTheme = alternate ? alternateTheme.value : baseTheme.value;
-      baseTheme.dataset.currentTheme = nextTheme;
-      alternateTheme.dataset.currentTheme = nextTheme;
-      return nextTheme;
-    }
-
-    function getGiscusFrame() {
-      return document.querySelector(giscusFrameSelector);
-    }
-
-    function setGiscusCrossfadeActive(active, frame) {
-      if (!frame) return;
-
-      frame.classList.toggle("giscus-theme-syncing", active);
-
-      if (giscusFadeTimeoutId !== null) {
-        window.clearTimeout(giscusFadeTimeoutId);
-        giscusFadeTimeoutId = null;
-      }
-
-      if (!active) return;
-
-      giscusFadeTimeoutId = window.setTimeout(function () {
-        frame.classList.remove("giscus-theme-syncing");
-        giscusFadeTimeoutId = null;
-      }, reducedMotionQuery.matches ? 0 : 220);
-    }
-
-    function postGiscusTheme(theme, frame) {
-      const iframe = frame ?? getGiscusFrame();
-      if (!iframe || !theme || !iframe.contentWindow) return false;
-
-      iframe.contentWindow.postMessage(
-        {
-          giscus: {
-            setConfig: {
-              theme: theme
-            }
-          }
-        },
-        "https://giscus.app"
-      );
-
-      return true;
-    }
-
-    function scheduleGiscusThemeSync(theme, frame, attempts, delayMs, token) {
-      if (token !== giscusSyncToken) return;
-
-      const activeFrame = frame ?? getGiscusFrame();
-      if (!activeFrame) return;
-
-      postGiscusTheme(theme, activeFrame);
-
-      if (attempts <= 1) {
-        window.requestAnimationFrame(function () {
-          if (token !== giscusSyncToken) return;
-          postGiscusTheme(theme, activeFrame);
         });
-        return;
-      }
 
-      window.setTimeout(function () {
-        scheduleGiscusThemeSync(theme, activeFrame, attempts - 1, delayMs, token);
-      }, delayMs);
-    }
-
-    function attachGiscusFrame(frame) {
-      if (!frame || trackedGiscusFrame === frame) return;
-      trackedGiscusFrame = frame;
-      frame.addEventListener("load", function () {
-        if (activeAlternate === null) return;
-        syncGiscusTheme(activeAlternate, frame);
-      });
-    }
-
-    function syncGiscusTheme(alternate, frame) {
-      const nextTheme = setGiscusThemeInputs(alternate);
-      const activeFrame = frame ?? getGiscusFrame();
-      if (!nextTheme || !activeFrame) return;
-
-      attachGiscusFrame(activeFrame);
-      setGiscusCrossfadeActive(true, activeFrame);
-
-      giscusSyncToken += 1;
-      scheduleGiscusThemeSync(nextTheme, activeFrame, 6, 140, giscusSyncToken);
-    }
-
-    function isAlternateActive() {
-      return Array.from(
-        document.querySelectorAll("link.quarto-color-scheme.quarto-color-alternate")
-      ).some(function (sheet) {
-        return sheet.rel !== "disabled-stylesheet";
-      });
-    }
-
-    function setButtonState(alternate) {
-      const button = document.querySelector(customToggleSelector);
-      if (!button) return;
-
-      const nextMode = alternate ? "light" : "dark";
-      const currentMode = alternate ? "dark" : "light";
-      button.setAttribute(
-        "aria-label",
-        currentMode + " mode enabled. Switch to " + nextMode + " mode"
-      );
-      button.setAttribute(
-        "title",
-        currentMode + " mode enabled. Switch to " + nextMode + " mode"
-      );
-      button.innerHTML = alternate ? moonStarIcon : sunMediumIcon;
-    }
-
-    function applyColorScheme(alternate) {
-      manualAlternate = alternate;
-      activeAlternate = alternate;
-      setDocumentColorScheme(alternate);
-      setBodyClasses(alternate);
-      toggleStylesheets(alternate);
-      setButtonState(alternate);
-      syncGiscusTheme(alternate);
-    }
-
-    function applyColorSchemeSmoothly(alternate) {
-      const canUseViewTransition =
-        typeof document.startViewTransition === "function" &&
-        !reducedMotionQuery.matches;
-
-      if (!canUseViewTransition) {
-        startThemeTransitionState();
-        window.requestAnimationFrame(function () {
-          applyColorScheme(alternate);
+      document
+        .querySelectorAll("link.quarto-color-scheme.quarto-color-alternate")
+        .forEach(function (sheet) {
+          sheet.rel = resolved === "dark" ? "stylesheet" : "disabled-stylesheet";
         });
-        return;
+
+      document.documentElement.dataset.theme = resolved;
+      if (document.body) {
+        document.body.classList.toggle("quarto-dark", resolved === "dark");
+        document.body.classList.toggle("quarto-light", resolved === "light");
       }
 
-      startThemeTransitionState();
-      const transition = document.startViewTransition(function () {
-        applyColorScheme(alternate);
-      });
-      transition.finished.finally(clearThemeTransitionState);
+      const frame = document.querySelector("iframe.giscus-frame");
+      const baseTheme = document.querySelector("#giscus-base-theme")?.value ?? "light";
+      const altTheme = document.querySelector("#giscus-alt-theme")?.value ?? "dark";
+      const giscusTheme = resolved === "dark" ? altTheme : baseTheme;
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage(
+          { giscus: { setConfig: { theme: giscusTheme } } },
+          "https://giscus.app"
+        );
+      }
     }
 
-    function createButton() {
-      const item = document.createElement("li");
-      item.className = "nav-item compact theme-mode-item";
+    window.readThemePreference = readThemePreference;
+    window.resolveTheme = resolveTheme;
+    window.applyTheme = applyTheme;
 
-      const button = document.createElement("a");
-      button.href = "";
-      button.setAttribute("role", "button");
-      button.className = "nav-link theme-mode-button";
-      button.innerHTML = sunMediumIcon;
-      button.addEventListener("click", function (event) {
-        event.preventDefault();
-        manualAlternate = !isAlternateActive();
-        writeStoredPreference(manualAlternate);
-        applyColorSchemeSmoothly(manualAlternate);
-      });
-      item.appendChild(button);
-      return item;
-    }
+    applyTheme(resolveTheme(readThemePreference()));
+  }());
+</script>
 
-    function ensureNavbarTarget() {
-      const navList = document.querySelector(".navbar-nav.navbar-nav-scroll.ms-auto");
-      if (navList) return navList;
+<script>
+  (function () {
+    const STORAGE_KEY = "theme-preference";
+    const DARK_MEDIA = window.matchMedia("(prefers-color-scheme: dark)");
 
-      let tools = document.querySelector(".quarto-navbar-tools");
-      if (tools) return tools;
-
-      const container = document.querySelector("#quarto-header .navbar-container");
-      if (!container) return null;
-
-      tools = document.createElement("div");
-      tools.className = "quarto-navbar-tools";
-      container.appendChild(tools);
-      return tools;
-    }
-
-    function initCustomToggle() {
-      if (customToggleInitialized) return;
-
-      document.querySelectorAll(builtInToggleSelector).forEach(function (toggle) {
-        toggle.remove();
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".quarto-color-scheme-toggle").forEach(function (el) {
+        el.remove();
       });
 
       document.querySelectorAll(".quarto-navbar-tools").forEach(function (tools) {
@@ -512,89 +105,31 @@
         }
       });
 
-      const target = ensureNavbarTarget();
-      if (!target || target.querySelector(customToggleSelector)) return;
+      const select = document.querySelector("#theme-select");
+      if (!select) return;
 
-      customToggleInitialized = true;
-      if (navbarBootstrapObserver) {
-        navbarBootstrapObserver.disconnect();
-        navbarBootstrapObserver = null;
+      const currentPreference = window.readThemePreference();
+      select.value = currentPreference;
+      window.applyTheme(window.resolveTheme(currentPreference));
+
+      select.addEventListener("change", function () {
+        const nextPreference =
+          select.value === "light" || select.value === "dark" || select.value === "system"
+            ? select.value
+            : "system";
+
+        try {
+          window.localStorage.setItem(STORAGE_KEY, nextPreference);
+        } catch (_) {}
+
+        window.applyTheme(window.resolveTheme(nextPreference));
+      });
+    });
+
+    DARK_MEDIA.addEventListener("change", function () {
+      if (window.readThemePreference() === "system") {
+        window.applyTheme(window.resolveTheme("system"));
       }
-
-      const buttonItem = createButton();
-      target.appendChild(buttonItem);
-
-      const storedPreference = readStoredPreference();
-      const alternate = storedPreference ?? isAlternateActive();
-      activeAlternate = alternate;
-      if (storedPreference !== null) {
-        manualAlternate = storedPreference;
-        applyColorScheme(storedPreference);
-      } else {
-        setDocumentColorScheme(alternate);
-        setBodyClasses(alternate);
-        setButtonState(alternate);
-        syncGiscusTheme(alternate);
-      }
-
-      systemThemeQuery.addEventListener("change", function () {
-        if (manualAlternate !== null) {
-          const storedPreference = readStoredPreference();
-          if (storedPreference === null) {
-            manualAlternate = null;
-          } else {
-            manualAlternate = storedPreference;
-          }
-        }
-
-        if (manualAlternate !== null) {
-          applyColorSchemeSmoothly(manualAlternate);
-          return;
-        }
-
-        const currentAlternate = isAlternateActive();
-        setDocumentColorScheme(currentAlternate);
-        setBodyClasses(currentAlternate);
-        setButtonState(currentAlternate);
-        syncGiscusTheme(currentAlternate);
-      });
-
-      const observer = new MutationObserver(function (mutations) {
-        if (activeAlternate === null) return;
-
-        for (const mutation of mutations) {
-          for (const node of mutation.addedNodes) {
-            if (!(node instanceof Element)) continue;
-            const frame =
-              node.matches?.(giscusFrameSelector)
-                ? node
-                : node.querySelector?.(giscusFrameSelector);
-            if (frame) {
-              attachGiscusFrame(frame);
-              syncGiscusTheme(activeAlternate, frame);
-              return;
-            }
-          }
-        }
-      });
-
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
-
-    primeInitialColorScheme();
-    initCustomToggle();
-
-    if (!customToggleInitialized) {
-      navbarBootstrapObserver = new MutationObserver(function () {
-        initCustomToggle();
-      });
-
-      navbarBootstrapObserver.observe(document.documentElement, {
-        childList: true,
-        subtree: true
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", initCustomToggle);
+    });
   }());
 </script>
