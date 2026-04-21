@@ -39,6 +39,47 @@
     transform: translateY(0.02em);
   }
 
+  :root {
+    color-scheme: light dark;
+  }
+
+  :root.theme-mode-transition body,
+  :root.theme-mode-transition #quarto-header,
+  :root.theme-mode-transition .navbar,
+  :root.theme-mode-transition .nav-footer,
+  :root.theme-mode-transition .quarto-title-banner,
+  :root.theme-mode-transition .theme-mode-button,
+  :root.theme-mode-transition .nav-link,
+  :root.theme-mode-transition .navbar-brand,
+  :root.theme-mode-transition a,
+  :root.theme-mode-transition button,
+  :root.theme-mode-transition input,
+  :root.theme-mode-transition textarea,
+  :root.theme-mode-transition select,
+  :root.theme-mode-transition pre,
+  :root.theme-mode-transition code,
+  :root.theme-mode-transition kbd,
+  :root.theme-mode-transition blockquote,
+  :root.theme-mode-transition table,
+  :root.theme-mode-transition th,
+  :root.theme-mode-transition td,
+  :root.theme-mode-transition .card,
+  :root.theme-mode-transition .list-group-item,
+  :root.theme-mode-transition .dropdown-menu,
+  :root.theme-mode-transition .alert,
+  :root.theme-mode-transition .badge,
+  :root.theme-mode-transition .btn,
+  :root.theme-mode-transition svg,
+  :root.theme-mode-transition svg * {
+    transition:
+      color 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease,
+      fill 180ms ease,
+      stroke 180ms ease,
+      box-shadow 180ms ease;
+  }
+
   iframe.giscus-frame {
     transition: opacity 180ms ease;
   }
@@ -56,6 +97,37 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    :root.theme-mode-transition body,
+    :root.theme-mode-transition #quarto-header,
+    :root.theme-mode-transition .navbar,
+    :root.theme-mode-transition .nav-footer,
+    :root.theme-mode-transition .quarto-title-banner,
+    :root.theme-mode-transition .theme-mode-button,
+    :root.theme-mode-transition .nav-link,
+    :root.theme-mode-transition .navbar-brand,
+    :root.theme-mode-transition a,
+    :root.theme-mode-transition button,
+    :root.theme-mode-transition input,
+    :root.theme-mode-transition textarea,
+    :root.theme-mode-transition select,
+    :root.theme-mode-transition pre,
+    :root.theme-mode-transition code,
+    :root.theme-mode-transition kbd,
+    :root.theme-mode-transition blockquote,
+    :root.theme-mode-transition table,
+    :root.theme-mode-transition th,
+    :root.theme-mode-transition td,
+    :root.theme-mode-transition .card,
+    :root.theme-mode-transition .list-group-item,
+    :root.theme-mode-transition .dropdown-menu,
+    :root.theme-mode-transition .alert,
+    :root.theme-mode-transition .badge,
+    :root.theme-mode-transition .btn,
+    :root.theme-mode-transition svg,
+    :root.theme-mode-transition svg * {
+      transition: none;
+    }
+
     iframe.giscus-frame {
       transition: none;
     }
@@ -78,6 +150,7 @@
     let trackedGiscusFrame = null;
     let giscusFadeTimeoutId = null;
     let giscusSyncToken = 0;
+    let themeTransitionCleanupId = null;
 
     const sunMediumIcon = [
       '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"',
@@ -164,6 +237,25 @@
 
       body.classList.toggle("quarto-dark", alternate);
       body.classList.toggle("quarto-light", !alternate);
+    }
+
+    function clearThemeTransitionState() {
+      document.documentElement.classList.remove("theme-mode-transition");
+      if (themeTransitionCleanupId !== null) {
+        window.clearTimeout(themeTransitionCleanupId);
+        themeTransitionCleanupId = null;
+      }
+    }
+
+    function startThemeTransitionState() {
+      if (reducedMotionQuery.matches) {
+        clearThemeTransitionState();
+        return;
+      }
+
+      clearThemeTransitionState();
+      document.documentElement.classList.add("theme-mode-transition");
+      themeTransitionCleanupId = window.setTimeout(clearThemeTransitionState, 260);
     }
 
     function toggleStylesheets(alternate) {
@@ -305,12 +397,11 @@
 
     function applyColorScheme(alternate) {
       activeAlternate = alternate;
-      toggleStylesheets(alternate);
       setDocumentColorScheme(alternate);
       setBodyClasses(alternate);
+      toggleStylesheets(alternate);
       setButtonState(alternate);
       syncGiscusTheme(alternate);
-      window.dispatchEvent(new Event("resize"));
     }
 
     function applyColorSchemeSmoothly(alternate) {
@@ -319,13 +410,18 @@
         !reducedMotionQuery.matches;
 
       if (!canUseViewTransition) {
-        applyColorScheme(alternate);
+        startThemeTransitionState();
+        window.requestAnimationFrame(function () {
+          applyColorScheme(alternate);
+        });
         return;
       }
 
-      document.startViewTransition(function () {
+      startThemeTransitionState();
+      const transition = document.startViewTransition(function () {
         applyColorScheme(alternate);
       });
+      transition.finished.finally(clearThemeTransitionState);
     }
 
     function createButton() {
