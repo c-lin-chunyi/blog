@@ -59,6 +59,7 @@ format:
       method: mathjax
       url: "html/vendor/mathjax-4.0.0/startup.js"
     include-in-header:
+      - html/fonts.html
       - html/mathjax-stix.html
       - html/theme-toggle.html
     toc: false

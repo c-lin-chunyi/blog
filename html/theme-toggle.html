@@ -38,6 +38,14 @@
     height: 1.16em;
     transform: translateY(0.02em);
   }
+
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 140ms;
+      animation-timing-function: ease;
+    }
+  }
 </style>
 
 <script>
@@ -48,6 +56,7 @@
     const builtInToggleSelector = ".quarto-color-scheme-toggle";
     const customToggleSelector = ".theme-mode-button";
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     let manualAlternate = null;
     let activeAlternate = null;
@@ -235,6 +244,21 @@
       window.dispatchEvent(new Event("resize"));
     }
 
+    function applyColorSchemeSmoothly(alternate) {
+      const canUseViewTransition =
+        typeof document.startViewTransition === "function" &&
+        !reducedMotionQuery.matches;
+
+      if (!canUseViewTransition) {
+        applyColorScheme(alternate);
+        return;
+      }
+
+      document.startViewTransition(function () {
+        applyColorScheme(alternate);
+      });
+    }
+
     function createButton() {
       const item = document.createElement("li");
       item.className = "nav-item compact theme-mode-item";
@@ -247,7 +271,7 @@
         event.preventDefault();
         manualAlternate = !isAlternateActive();
         writeStoredPreference(manualAlternate);
-        applyColorScheme(manualAlternate);
+        applyColorSchemeSmoothly(manualAlternate);
       });
       item.appendChild(button);
       return item;
@@ -310,7 +334,7 @@
         }
 
         if (manualAlternate !== null) {
-          applyColorScheme(manualAlternate);
+          applyColorSchemeSmoothly(manualAlternate);
           return;
         }
 

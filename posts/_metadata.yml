@@ -18,6 +18,7 @@ format:
         category: Blog comments
         category-id: DIC_kwDOSGBNys4C7Uf1
         mapping: pathname
+        loading: lazy
 
 # Default for table of contents
 toc: true

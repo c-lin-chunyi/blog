@@ -21,5 +21,4 @@ Unless otherwise noted:
 This site is heavily inspired by Dr. Andrew Heiss's Quarto website repository,
 [`andrewheiss/ath-quarto`](https://github.com/andrewheiss/ath-quarto).
 
-
 Any remaining errors are my own.
