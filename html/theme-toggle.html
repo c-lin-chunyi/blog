@@ -3,15 +3,113 @@
     display: none !important;
   }
 
-  #theme-select {
-    width: 100%;
-    max-width: 12rem;
-    padding: 0.35rem 0.5rem;
-    border: 1px solid currentColor;
-    border-radius: 0.375rem;
+  .theme-switcher {
+    display: inline-block;
+    margin: 0.2rem 0 0.45rem;
+  }
+
+  .theme-switcher-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.38rem 0.82rem;
+    border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+    border-radius: 999px;
     background: transparent;
     color: inherit;
     font: inherit;
+    font-size: 0.875rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 120ms ease, color 120ms ease;
+  }
+
+  .theme-switcher-trigger:hover,
+  .theme-switcher-trigger:focus-visible {
+    border-color: var(--bs-link-hover-color, currentColor);
+    color: var(--bs-link-hover-color, inherit);
+  }
+
+  .theme-switcher-trigger:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .theme-switcher-icon {
+    font-size: 0.95em;
+    opacity: 0.85;
+  }
+
+  .theme-switcher-menu {
+    min-width: 8.75rem;
+    margin-top: 0.45rem;
+    padding: 0.4rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--bs-border-color, rgba(128, 128, 128, 0.3));
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    color: inherit;
+  }
+
+  .theme-switcher-option {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: 100%;
+    padding: 0.46rem 0.62rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: inherit;
+    font-size: 0.875rem;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .theme-switcher-option > i:first-child {
+    width: 0.95em;
+    font-size: 0.9em;
+    text-align: center;
+    opacity: 0.85;
+  }
+
+  .theme-switcher-option,
+  .theme-switcher-option:active {
+    color: inherit;
+  }
+
+  .theme-switcher-option.active {
+    color: var(--bs-emphasis-color, currentColor);
+    background: var(--bs-primary);
+  }
+
+  .theme-switcher-check {
+    margin-left: auto;
+    font-size: 0.75em;
+    opacity: 0;
+  }
+
+  .theme-switcher-option.active .theme-switcher-check {
+    opacity: 0.85;
+  }
+
+  .theme-switcher-option:hover,
+  .theme-switcher-option:focus-visible {
+    background: transparent;
+    color: var(--bs-emphasis-color, currentColor);
+    outline: none;
+  }
+
+  .theme-switcher-option.active:hover,
+  .theme-switcher-option.active:focus-visible {
+    background: var(--bs-primary);
+    color: var(--bs-emphasis-color, currentColor);
+  }
+
+  html[data-theme="dark"] .theme-switcher-option:hover,
+  html[data-theme="dark"] .theme-switcher-option:focus-visible,
+  html[data-theme="dark"] .theme-switcher-option.active:hover,
+  html[data-theme="dark"] .theme-switcher-option.active:focus-visible {
+    color: #fff;
   }
 </style>
 
@@ -19,22 +117,14 @@
   (function () {
     const STORAGE_KEY = "theme-preference";
     const LEGACY_KEYS = ["quarto-color-scheme", "theme-mode-preference"];
+    const VALID_PREFERENCES = ["light", "dark", "system"];
     const DARK_MEDIA = window.matchMedia("(prefers-color-scheme: dark)");
-
-    function clearLegacyKeys() {
-      try {
-        LEGACY_KEYS.forEach(function (key) {
-          window.localStorage.removeItem(key);
-        });
-      } catch (_) {}
-    }
+    let giscusObserver = null;
 
     function readThemePreference() {
-      clearLegacyKeys();
-
       try {
         const value = window.localStorage.getItem(STORAGE_KEY);
-        if (value === "light" || value === "dark" || value === "system") {
+        if (VALID_PREFERENCES.includes(value)) {
           return value;
         }
         if (value !== null) {
@@ -50,49 +140,157 @@
       return DARK_MEDIA.matches ? "dark" : "light";
     }
 
-    function applyTheme(resolved) {
-      document
-        .querySelectorAll("link.quarto-color-scheme:not(.quarto-color-alternate)")
-        .forEach(function (sheet) {
+    function syncLegacyThemeState(resolved) {
+      try {
+        window.localStorage.setItem(
+          "quarto-color-scheme",
+          resolved === "dark" ? "alternate" : "default"
+        );
+        window.localStorage.removeItem("theme-mode-preference");
+      } catch (_) {}
+    }
+
+    function applyStylesheets(resolved) {
+      const primarySheets = document.querySelectorAll(
+        "link.quarto-color-scheme:not(.quarto-color-alternate)"
+      );
+      primarySheets.forEach(function (sheet) {
+        if (sheet.rel !== "stylesheet") {
           sheet.rel = "stylesheet";
-        });
+        }
+      });
 
-      document
-        .querySelectorAll("link.quarto-color-scheme.quarto-color-alternate")
-        .forEach(function (sheet) {
-          sheet.rel = resolved === "dark" ? "stylesheet" : "disabled-stylesheet";
-        });
+      const alternateSheets = document.querySelectorAll(
+        "link.quarto-color-scheme.quarto-color-alternate"
+      );
+      alternateSheets.forEach(function (sheet) {
+        sheet.rel = resolved === "dark" ? "stylesheet" : "disabled-stylesheet";
+      });
 
-      document.documentElement.dataset.theme = resolved;
-      if (document.body) {
-        document.body.classList.toggle("quarto-dark", resolved === "dark");
-        document.body.classList.toggle("quarto-light", resolved === "light");
-      }
+      return primarySheets.length + alternateSheets.length > 0;
+    }
 
+    function syncGiscusTheme(resolved) {
       const frame = document.querySelector("iframe.giscus-frame");
       const baseTheme = document.querySelector("#giscus-base-theme")?.value ?? "light";
       const altTheme = document.querySelector("#giscus-alt-theme")?.value ?? "dark";
       const giscusTheme = resolved === "dark" ? altTheme : baseTheme;
+
       if (frame && frame.contentWindow) {
         frame.contentWindow.postMessage(
           { giscus: { setConfig: { theme: giscusTheme } } },
           "https://giscus.app"
         );
+        return true;
       }
+
+      return false;
+    }
+
+    function ensureGiscusThemeSync(resolved) {
+      if (syncGiscusTheme(resolved)) {
+        if (giscusObserver) {
+          giscusObserver.disconnect();
+          giscusObserver = null;
+        }
+        return;
+      }
+
+      if (giscusObserver) return;
+
+      giscusObserver = new MutationObserver(function () {
+        if (syncGiscusTheme(resolved)) {
+          giscusObserver.disconnect();
+          giscusObserver = null;
+        }
+      });
+
+      giscusObserver.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    function applyTheme(resolved, preference) {
+      applyStylesheets(resolved);
+      syncLegacyThemeState(resolved);
+
+      document.documentElement.dataset.theme = resolved;
+      if (preference) {
+        document.documentElement.dataset.themePreference = preference;
+      }
+      document.documentElement.style.colorScheme = resolved;
+
+      if (document.body) {
+        document.body.classList.toggle("quarto-dark", resolved === "dark");
+        document.body.classList.toggle("quarto-light", resolved === "light");
+      }
+
+      ensureGiscusThemeSync(resolved);
     }
 
     window.readThemePreference = readThemePreference;
     window.resolveTheme = resolveTheme;
     window.applyTheme = applyTheme;
 
-    applyTheme(resolveTheme(readThemePreference()));
+    const preference = readThemePreference();
+    const resolved = resolveTheme(preference);
+    syncLegacyThemeState(resolved);
+    document.documentElement.dataset.theme = resolved;
+    document.documentElement.dataset.themePreference = preference;
+    document.documentElement.style.colorScheme = resolved;
+
+    if (!applyStylesheets(resolved)) {
+      const observer = new MutationObserver(function () {
+        if (applyStylesheets(resolved)) {
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
   }());
 </script>
 
 <script>
   (function () {
     const STORAGE_KEY = "theme-preference";
+    const VALID_PREFERENCES = ["light", "dark", "system"];
     const DARK_MEDIA = window.matchMedia("(prefers-color-scheme: dark)");
+    const ICONS = {
+      light: "fa-sun",
+      dark: "fa-moon",
+      system: "fa-desktop"
+    };
+    const LABELS = {
+      light: "Light",
+      dark: "Dark",
+      system: "System"
+    };
+
+    function updateTriggerUI(preference) {
+      const trigger = document.querySelector("#theme-switcher-button");
+      if (!trigger) return;
+
+      const icon = trigger.querySelector(".theme-switcher-icon");
+      const label = trigger.querySelector(".theme-switcher-label");
+
+      if (icon) {
+        icon.classList.remove("fa-sun", "fa-moon", "fa-desktop");
+        icon.classList.add(ICONS[preference]);
+      }
+
+      if (label) {
+        label.textContent = LABELS[preference];
+      }
+
+      document.querySelectorAll(".theme-switcher-option").forEach(function (option) {
+        option.classList.toggle("active", option.dataset.themeValue === preference);
+      });
+    }
 
     document.addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll(".quarto-color-scheme-toggle").forEach(function (el) {
@@ -105,30 +303,31 @@
         }
       });
 
-      const select = document.querySelector("#theme-select");
-      if (!select) return;
-
       const currentPreference = window.readThemePreference();
-      select.value = currentPreference;
-      window.applyTheme(window.resolveTheme(currentPreference));
+      window.applyTheme(window.resolveTheme(currentPreference), currentPreference);
+      updateTriggerUI(currentPreference);
 
-      select.addEventListener("change", function () {
-        const nextPreference =
-          select.value === "light" || select.value === "dark" || select.value === "system"
-            ? select.value
-            : "system";
+      document.querySelectorAll(".theme-switcher-option").forEach(function (option) {
+        option.addEventListener("click", function () {
+          const nextPreference = option.dataset.themeValue;
+          if (!VALID_PREFERENCES.includes(nextPreference)) return;
 
-        try {
-          window.localStorage.setItem(STORAGE_KEY, nextPreference);
-        } catch (_) {}
+          try {
+            window.localStorage.setItem(STORAGE_KEY, nextPreference);
+          } catch (_) {}
 
-        window.applyTheme(window.resolveTheme(nextPreference));
+          window.applyTheme(window.resolveTheme(nextPreference), nextPreference);
+          updateTriggerUI(nextPreference);
+          window.location.reload();
+        });
       });
     });
 
     DARK_MEDIA.addEventListener("change", function () {
-      if (window.readThemePreference() === "system") {
-        window.applyTheme(window.resolveTheme("system"));
+      const currentPreference = window.readThemePreference();
+      if (currentPreference === "system") {
+        window.applyTheme(window.resolveTheme("system"), "system");
+        updateTriggerUI("system");
       }
     });
   }());
