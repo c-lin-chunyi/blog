@@ -144,6 +144,7 @@
     const giscusFrameSelector = "iframe.giscus-frame";
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const root = document.documentElement;
 
     let manualAlternate = null;
     let activeAlternate = null;
@@ -151,6 +152,7 @@
     let giscusFadeTimeoutId = null;
     let giscusSyncToken = 0;
     let themeTransitionCleanupId = null;
+    let colorSchemeBootstrapObserver = null;
     let navbarBootstrapObserver = null;
     let customToggleInitialized = false;
 
@@ -229,8 +231,20 @@
       }
     }
 
+    function getPreferredAlternate() {
+      const storedPreference = readStoredPreference();
+      if (storedPreference !== null) {
+        manualAlternate = storedPreference;
+        return storedPreference;
+      }
+
+      manualAlternate = null;
+      return systemThemeQuery.matches;
+    }
+
     function setDocumentColorScheme(alternate) {
-      document.documentElement.style.colorScheme = alternate ? "dark" : "light";
+      root.style.colorScheme = alternate ? "dark" : "light";
+      root.dataset.themeMode = alternate ? "dark" : "light";
     }
 
     function setBodyClasses(alternate) {
@@ -242,7 +256,7 @@
     }
 
     function clearThemeTransitionState() {
-      document.documentElement.classList.remove("theme-mode-transition");
+      root.classList.remove("theme-mode-transition");
       if (themeTransitionCleanupId !== null) {
         window.clearTimeout(themeTransitionCleanupId);
         themeTransitionCleanupId = null;
@@ -256,7 +270,7 @@
       }
 
       clearThemeTransitionState();
-      document.documentElement.classList.add("theme-mode-transition");
+      root.classList.add("theme-mode-transition");
       themeTransitionCleanupId = window.setTimeout(clearThemeTransitionState, 260);
     }
 
@@ -276,6 +290,29 @@
 
       alternateSheets.forEach(function (sheet) {
         sheet.rel = alternate ? "stylesheet" : "disabled-stylesheet";
+      });
+
+      return primarySheets.length + alternateSheets.length > 0;
+    }
+
+    function primeInitialColorScheme() {
+      const alternate = getPreferredAlternate();
+      activeAlternate = alternate;
+      setDocumentColorScheme(alternate);
+      const appliedToStylesheets = toggleStylesheets(alternate);
+      setBodyClasses(alternate);
+
+      if (appliedToStylesheets || colorSchemeBootstrapObserver) return;
+
+      colorSchemeBootstrapObserver = new MutationObserver(function () {
+        if (!toggleStylesheets(alternate)) return;
+        colorSchemeBootstrapObserver.disconnect();
+        colorSchemeBootstrapObserver = null;
+      });
+
+      colorSchemeBootstrapObserver.observe(root, {
+        childList: true,
+        subtree: true
       });
     }
 
@@ -398,6 +435,7 @@
     }
 
     function applyColorScheme(alternate) {
+      manualAlternate = alternate;
       activeAlternate = alternate;
       setDocumentColorScheme(alternate);
       setBodyClasses(alternate);
@@ -543,6 +581,7 @@
       observer.observe(document.body, { childList: true, subtree: true });
     }
 
+    primeInitialColorScheme();
     initCustomToggle();
 
     if (!customToggleInitialized) {
