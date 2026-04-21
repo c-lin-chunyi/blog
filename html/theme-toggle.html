@@ -5,7 +5,7 @@
 
   .theme-switcher {
     display: inline-block;
-    margin: 0.2rem 0 0.45rem;
+    margin: 0.12rem 0 0;
   }
 
   .theme-switcher-trigger {
@@ -46,8 +46,12 @@
     padding: 0.4rem;
     border-radius: 0.75rem;
     border: 1px solid var(--bs-border-color, rgba(128, 128, 128, 0.3));
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     color: inherit;
+  }
+
+  html[data-theme="dark"] .theme-switcher-menu {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
   }
 
   .theme-switcher-option {
@@ -78,8 +82,13 @@
   }
 
   .theme-switcher-option.active {
-    color: var(--bs-emphasis-color, currentColor);
+    color: #fff;
     background: var(--bs-primary);
+  }
+
+  .theme-switcher-option.active > i:first-child,
+  .theme-switcher-option.active .theme-switcher-check {
+    opacity: 1;
   }
 
   .theme-switcher-check {
@@ -102,13 +111,11 @@
   .theme-switcher-option.active:hover,
   .theme-switcher-option.active:focus-visible {
     background: var(--bs-primary);
-    color: var(--bs-emphasis-color, currentColor);
+    color: #fff;
   }
 
   html[data-theme="dark"] .theme-switcher-option:hover,
-  html[data-theme="dark"] .theme-switcher-option:focus-visible,
-  html[data-theme="dark"] .theme-switcher-option.active:hover,
-  html[data-theme="dark"] .theme-switcher-option.active:focus-visible {
+  html[data-theme="dark"] .theme-switcher-option:focus-visible {
     color: #fff;
   }
 </style>
