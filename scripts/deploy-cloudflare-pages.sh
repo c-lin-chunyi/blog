@@ -20,3 +20,5 @@ if [[ -n "${BRANCH_NAME}" ]]; then
 fi
 
 npx wrangler "${args[@]}"
+
+"$(dirname "$0")/purge-cloudflare-cache.sh"

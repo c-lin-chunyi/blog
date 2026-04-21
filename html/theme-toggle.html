@@ -39,11 +39,25 @@
     transform: translateY(0.02em);
   }
 
+  iframe.giscus-frame {
+    transition: opacity 180ms ease;
+  }
+
+  iframe.giscus-frame.giscus-theme-syncing {
+    opacity: 0.35;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     ::view-transition-old(root),
     ::view-transition-new(root) {
       animation-duration: 140ms;
       animation-timing-function: ease;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    iframe.giscus-frame {
+      transition: none;
     }
   }
 </style>
@@ -55,11 +69,15 @@
     const preferenceTtlMs = 30 * 60 * 1000;
     const builtInToggleSelector = ".quarto-color-scheme-toggle";
     const customToggleSelector = ".theme-mode-button";
+    const giscusFrameSelector = "iframe.giscus-frame";
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     let manualAlternate = null;
     let activeAlternate = null;
+    let trackedGiscusFrame = null;
+    let giscusFadeTimeoutId = null;
+    let giscusSyncToken = 0;
 
     const sunMediumIcon = [
       '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"',
@@ -178,9 +196,31 @@
       return nextTheme;
     }
 
-    function postGiscusTheme(theme) {
-      const iframe = document.querySelector("iframe.giscus-frame");
-      if (!iframe || !theme) return false;
+    function getGiscusFrame() {
+      return document.querySelector(giscusFrameSelector);
+    }
+
+    function setGiscusCrossfadeActive(active, frame) {
+      if (!frame) return;
+
+      frame.classList.toggle("giscus-theme-syncing", active);
+
+      if (giscusFadeTimeoutId !== null) {
+        window.clearTimeout(giscusFadeTimeoutId);
+        giscusFadeTimeoutId = null;
+      }
+
+      if (!active) return;
+
+      giscusFadeTimeoutId = window.setTimeout(function () {
+        frame.classList.remove("giscus-theme-syncing");
+        giscusFadeTimeoutId = null;
+      }, reducedMotionQuery.matches ? 0 : 220);
+    }
+
+    function postGiscusTheme(theme, frame) {
+      const iframe = frame ?? getGiscusFrame();
+      if (!iframe || !theme || !iframe.contentWindow) return false;
 
       iframe.contentWindow.postMessage(
         {
@@ -196,17 +236,46 @@
       return true;
     }
 
-    function syncGiscusTheme(alternate) {
-      const nextTheme = setGiscusThemeInputs(alternate);
-      if (!postGiscusTheme(nextTheme)) return;
+    function scheduleGiscusThemeSync(theme, frame, attempts, delayMs, token) {
+      if (token !== giscusSyncToken) return;
 
-      window.requestAnimationFrame(function () {
-        postGiscusTheme(nextTheme);
-      });
+      const activeFrame = frame ?? getGiscusFrame();
+      if (!activeFrame) return;
+
+      postGiscusTheme(theme, activeFrame);
+
+      if (attempts <= 1) {
+        window.requestAnimationFrame(function () {
+          if (token !== giscusSyncToken) return;
+          postGiscusTheme(theme, activeFrame);
+        });
+        return;
+      }
 
       window.setTimeout(function () {
-        postGiscusTheme(nextTheme);
-      }, 120);
+        scheduleGiscusThemeSync(theme, activeFrame, attempts - 1, delayMs, token);
+      }, delayMs);
+    }
+
+    function attachGiscusFrame(frame) {
+      if (!frame || trackedGiscusFrame === frame) return;
+      trackedGiscusFrame = frame;
+      frame.addEventListener("load", function () {
+        if (activeAlternate === null) return;
+        syncGiscusTheme(activeAlternate, frame);
+      });
+    }
+
+    function syncGiscusTheme(alternate, frame) {
+      const nextTheme = setGiscusThemeInputs(alternate);
+      const activeFrame = frame ?? getGiscusFrame();
+      if (!nextTheme || !activeFrame) return;
+
+      attachGiscusFrame(activeFrame);
+      setGiscusCrossfadeActive(true, activeFrame);
+
+      giscusSyncToken += 1;
+      scheduleGiscusThemeSync(nextTheme, activeFrame, 6, 140, giscusSyncToken);
     }
 
     function isAlternateActive() {
@@ -351,11 +420,13 @@
         for (const mutation of mutations) {
           for (const node of mutation.addedNodes) {
             if (!(node instanceof Element)) continue;
-            if (
-              node.matches?.("iframe.giscus-frame") ||
-              node.querySelector?.("iframe.giscus-frame")
-            ) {
-              syncGiscusTheme(activeAlternate);
+            const frame =
+              node.matches?.(giscusFrameSelector)
+                ? node
+                : node.querySelector?.(giscusFrameSelector);
+            if (frame) {
+              attachGiscusFrame(frame);
+              syncGiscusTheme(activeAlternate, frame);
               return;
             }
           }
