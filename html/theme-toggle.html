@@ -151,6 +151,8 @@
     let giscusFadeTimeoutId = null;
     let giscusSyncToken = 0;
     let themeTransitionCleanupId = null;
+    let navbarBootstrapObserver = null;
+    let customToggleInitialized = false;
 
     const sunMediumIcon = [
       '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"',
@@ -432,6 +434,7 @@
       button.href = "";
       button.setAttribute("role", "button");
       button.className = "nav-link theme-mode-button";
+      button.innerHTML = sunMediumIcon;
       button.addEventListener("click", function (event) {
         event.preventDefault();
         manualAlternate = !isAlternateActive();
@@ -459,6 +462,8 @@
     }
 
     function initCustomToggle() {
+      if (customToggleInitialized) return;
+
       document.querySelectorAll(builtInToggleSelector).forEach(function (toggle) {
         toggle.remove();
       });
@@ -471,6 +476,12 @@
 
       const target = ensureNavbarTarget();
       if (!target || target.querySelector(customToggleSelector)) return;
+
+      customToggleInitialized = true;
+      if (navbarBootstrapObserver) {
+        navbarBootstrapObserver.disconnect();
+        navbarBootstrapObserver = null;
+      }
 
       const buttonItem = createButton();
       target.appendChild(buttonItem);
@@ -532,8 +543,19 @@
       observer.observe(document.body, { childList: true, subtree: true });
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      window.setTimeout(initCustomToggle, 0);
-    });
+    initCustomToggle();
+
+    if (!customToggleInitialized) {
+      navbarBootstrapObserver = new MutationObserver(function () {
+        initCustomToggle();
+      });
+
+      navbarBootstrapObserver.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", initCustomToggle);
   }());
 </script>
