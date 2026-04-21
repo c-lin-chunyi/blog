@@ -1,5 +1,5 @@
 ---
-title: "Welcome To My Blog"
+title: "Posts"
 author: ""
 listing:
   contents: "*/index.qmd"

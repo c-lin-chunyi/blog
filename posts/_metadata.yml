@@ -12,6 +12,12 @@ format:
     code-tools: true
     quarto-template-params:
       banner-header-class: "blog-post"
+    comments:
+      giscus: 
+        repo: c-lin-chunyi/blog
+        category: Blog comments
+        category-id: DIC_kwDOSGBNys4C7Uf1
+        mapping: pathname
 
 # Default for table of contents
 toc: true
