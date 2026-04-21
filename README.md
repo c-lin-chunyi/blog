@@ -10,7 +10,9 @@ Unless otherwise noted:
 
 - Website content, including posts and pages, is licensed under the
   Creative Commons Attribution 4.0 International License (CC BY 4.0).
-- Source code, configuration, stylesheets, and scripts are licensed under
+- The custom theme toggle uses Lucide icons (`sun-medium` and `moon-star`),
+  which are credited in source and remain under the Lucide ISC License.
+- Other source code, configuration, stylesheets, and scripts are licensed under
   the MIT License.
 - Third-party dependencies and vendored assets remain under their own licenses.
 
@@ -19,7 +21,5 @@ Unless otherwise noted:
 This site is heavily inspired by Dr. Andrew Heiss's Quarto website repository,
 [`andrewheiss/ath-quarto`](https://github.com/andrewheiss/ath-quarto).
 
-The custom theme toggle uses Lucide icons (`sun-medium` and `moon-star`),
-which are credited in source and remain under the Lucide ISC license.
 
 Any remaining errors are my own.
