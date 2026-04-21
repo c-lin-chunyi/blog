@@ -37,6 +37,10 @@
   outline: 0 !important;
 }
 
+#quarto-header .navbar-logo {
+  max-height: 48px;
+}
+
 #quarto-header::before,
 #quarto-header::after,
 #quarto-header > nav.navbar::before,

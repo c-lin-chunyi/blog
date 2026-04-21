@@ -24,10 +24,9 @@ website:
   llms-txt: true
 
   navbar:
+    logo: logo.svg
     pinned: true
     left:
-      - text: About
-        href: index.qmd
       - text: CV
         href: cv/index.qmd
       - text: Posts
