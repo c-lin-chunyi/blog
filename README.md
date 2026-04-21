@@ -18,4 +18,8 @@ Unless otherwise noted:
 
 This site is heavily inspired by Dr. Andrew Heiss's Quarto website repository,
 [`andrewheiss/ath-quarto`](https://github.com/andrewheiss/ath-quarto).
+
+The custom theme toggle uses Lucide icons (`sun-medium` and `moon-star`),
+which are credited in source and remain under the Lucide ISC license.
+
 Any remaining errors are my own.

@@ -1,68 +1,145 @@
+<style>
+  /* Toggle icons adapted from Lucide (ISC): sun-medium and moon-star. */
+  .quarto-color-scheme-toggle {
+    display: none !important;
+  }
+
+  .theme-mode-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
+    border: 0;
+    background: transparent;
+    color: var(--quarto-scss-export-navbar-fg, inherit);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: color 120ms ease;
+  }
+
+  .theme-mode-button:hover,
+  .theme-mode-button:focus-visible {
+    color: var(--quarto-scss-export-navbar-hover-color, var(--quarto-scss-export-navbar-hl, inherit));
+  }
+
+  .theme-mode-button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+
+  .theme-mode-button svg {
+    display: block;
+    width: 1.16em;
+    height: 1.16em;
+    transform: translateY(0.02em);
+  }
+</style>
+
 <script>
   (function () {
-    const storageKey = "quarto-color-scheme";
-    const selector = ".quarto-color-scheme-toggle";
-    const toggleLabel = "Toggle light/dark switch";
+    const quartoStorageKey = "quarto-color-scheme";
+    const preferenceStorageKey = "theme-mode-preference";
+    const preferenceTtlMs = 30 * 60 * 1000;
+    const builtInToggleSelector = ".quarto-color-scheme-toggle";
+    const customToggleSelector = ".theme-mode-button";
     const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     let manualAlternate = null;
-    let nativeScrollTo = null;
-    let uninstallTimer = null;
+    let activeAlternate = null;
 
-    try {
-      window.localStorage.removeItem(storageKey);
-    } catch (_) {
-      // Ignore storage access failures and continue without persistence.
+    const sunMediumIcon = [
+      '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"',
+      ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">',
+      '<circle cx="12" cy="12" r="4"></circle>',
+      '<path d="M12 3v1"></path>',
+      '<path d="M12 20v1"></path>',
+      '<path d="M3 12h1"></path>',
+      '<path d="M20 12h1"></path>',
+      '<path d="m18.364 5.636-.707.707"></path>',
+      '<path d="m6.343 17.657-.707.707"></path>',
+      '<path d="m5.636 5.636.707.707"></path>',
+      '<path d="m17.657 17.657.707.707"></path>',
+      '</svg>'
+    ].join("");
+
+    const moonStarIcon = [
+      '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"',
+      ' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">',
+      '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"></path>',
+      '<path d="M19 3v4"></path>',
+      '<path d="M21 5h-4"></path>',
+      '</svg>'
+    ].join("");
+
+    function clearStoredPreference() {
+      try {
+        window.localStorage.removeItem(preferenceStorageKey);
+      } catch (_) {
+        // Ignore storage access failures and continue without persistence.
+      }
     }
 
-    function installFilter() {
-      if (nativeScrollTo) return;
-      nativeScrollTo = window.scrollTo.bind(window);
-      window.scrollTo = function () {
-        const x = typeof arguments[0] === "object" ? arguments[0].left : arguments[0];
-        const y = typeof arguments[0] === "object" ? arguments[0].top : arguments[1];
-        if (x === 0 && (y === 0 || y === 1)) return;
-        return nativeScrollTo.apply(null, arguments);
-      };
-    }
+    function readStoredPreference() {
+      try {
+        window.localStorage.removeItem(quartoStorageKey);
+        const raw = window.localStorage.getItem(preferenceStorageKey);
+        if (!raw) return null;
 
-    function scheduleUninstall() {
-      if (uninstallTimer) clearTimeout(uninstallTimer);
-      uninstallTimer = setTimeout(function () {
-        if (nativeScrollTo) {
-          window.scrollTo = nativeScrollTo;
-          nativeScrollTo = null;
+        const parsed = JSON.parse(raw);
+        if (
+          typeof parsed !== "object" ||
+          parsed === null ||
+          typeof parsed.alternate !== "boolean" ||
+          typeof parsed.expiresAt !== "number"
+        ) {
+          clearStoredPreference();
+          return null;
         }
-        uninstallTimer = null;
-      }, 150);
+
+        if (Date.now() > parsed.expiresAt) {
+          clearStoredPreference();
+          return null;
+        }
+
+        return parsed.alternate;
+      } catch (_) {
+        clearStoredPreference();
+        return null;
+      }
     }
 
-    function setToggleMetadata() {
-      document.querySelectorAll(selector).forEach(function (toggle) {
-        toggle.removeAttribute("onclick");
-        toggle.onclick = null;
-        toggle.setAttribute("role", "button");
-        toggle.setAttribute("title", toggleLabel);
-        toggle.setAttribute("aria-label", toggleLabel);
-      });
+    function writeStoredPreference(alternate) {
+      try {
+        window.localStorage.setItem(
+          preferenceStorageKey,
+          JSON.stringify({
+            alternate: alternate,
+            expiresAt: Date.now() + preferenceTtlMs
+          })
+        );
+      } catch (_) {
+        // Ignore storage access failures and continue without persistence.
+      }
     }
 
-    function setToggleState(alternate) {
-      document.querySelectorAll(selector).forEach(function (toggle) {
-        toggle.classList.toggle("alternate", alternate);
-      });
+    function setDocumentColorScheme(alternate) {
+      document.documentElement.style.colorScheme = alternate ? "dark" : "light";
     }
 
-    function setBodyColorMode(sheet) {
+    function setBodyClasses(alternate) {
       const body = document.body;
-      if (!body || !sheet) return;
+      if (!body) return;
 
-      const mode = sheet.getAttribute("data-mode");
-      body.classList.toggle("quarto-dark", mode === "dark");
-      body.classList.toggle("quarto-light", mode !== "dark");
+      body.classList.toggle("quarto-dark", alternate);
+      body.classList.toggle("quarto-light", !alternate);
     }
 
-    function fallbackToggleColorMode(alternate) {
+    function toggleStylesheets(alternate) {
       const primarySheets = document.querySelectorAll(
         "link.quarto-color-scheme:not(.quarto-color-alternate)"
       );
@@ -71,39 +148,56 @@
       );
 
       primarySheets.forEach(function (sheet) {
-        if (sheet.rel !== "stylesheet") sheet.rel = "stylesheet";
+        if (sheet.rel !== "stylesheet") {
+          sheet.rel = "stylesheet";
+        }
       });
 
-      if (alternate) {
-        alternateSheets.forEach(function (sheet) {
-          sheet.rel = "stylesheet";
-          if (sheet.id === "quarto-bootstrap") setBodyColorMode(sheet);
-        });
-      } else {
-        alternateSheets.forEach(function (sheet) {
-          sheet.rel = "disabled-stylesheet";
-        });
-        const activePrimary = document.querySelector(
-          "link#quarto-bootstrap.quarto-color-scheme:not(.quarto-color-alternate)"
-        );
-        setBodyColorMode(activePrimary);
-      }
-
-      setToggleState(alternate);
+      alternateSheets.forEach(function (sheet) {
+        sheet.rel = alternate ? "stylesheet" : "disabled-stylesheet";
+      });
     }
 
-    function applyColorScheme(alternate) {
-      if (typeof toggleColorMode === "function") {
-        toggleColorMode(alternate);
-      } else {
-        fallbackToggleColorMode(alternate);
-      }
+    function setGiscusThemeInputs(alternate) {
+      const baseTheme = document.querySelector("#giscus-base-theme");
+      const alternateTheme = document.querySelector("#giscus-alt-theme");
+      if (!baseTheme || !alternateTheme) return null;
 
-      if (typeof toggleGiscusIfUsed === "function") {
-        toggleGiscusIfUsed(alternate, systemThemeQuery.matches);
-      }
+      const nextTheme = alternate ? alternateTheme.value : baseTheme.value;
+      baseTheme.dataset.currentTheme = nextTheme;
+      alternateTheme.dataset.currentTheme = nextTheme;
+      return nextTheme;
+    }
 
-      window.dispatchEvent(new Event("resize"));
+    function postGiscusTheme(theme) {
+      const iframe = document.querySelector("iframe.giscus-frame");
+      if (!iframe || !theme) return false;
+
+      iframe.contentWindow.postMessage(
+        {
+          giscus: {
+            setConfig: {
+              theme: theme
+            }
+          }
+        },
+        "https://giscus.app"
+      );
+
+      return true;
+    }
+
+    function syncGiscusTheme(alternate) {
+      const nextTheme = setGiscusThemeInputs(alternate);
+      if (!postGiscusTheme(nextTheme)) return;
+
+      window.requestAnimationFrame(function () {
+        postGiscusTheme(nextTheme);
+      });
+
+      window.setTimeout(function () {
+        postGiscusTheme(nextTheme);
+      }, 120);
     }
 
     function isAlternateActive() {
@@ -114,38 +208,141 @@
       });
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      setToggleMetadata();
+    function setButtonState(alternate) {
+      const button = document.querySelector(customToggleSelector);
+      if (!button) return;
 
-      window.quartoToggleColorScheme = function () {
+      const nextMode = alternate ? "light" : "dark";
+      const currentMode = alternate ? "dark" : "light";
+      button.setAttribute(
+        "aria-label",
+        currentMode + " mode enabled. Switch to " + nextMode + " mode"
+      );
+      button.setAttribute(
+        "title",
+        currentMode + " mode enabled. Switch to " + nextMode + " mode"
+      );
+      button.innerHTML = alternate ? moonStarIcon : sunMediumIcon;
+    }
+
+    function applyColorScheme(alternate) {
+      activeAlternate = alternate;
+      toggleStylesheets(alternate);
+      setDocumentColorScheme(alternate);
+      setBodyClasses(alternate);
+      setButtonState(alternate);
+      syncGiscusTheme(alternate);
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    function createButton() {
+      const item = document.createElement("li");
+      item.className = "nav-item compact theme-mode-item";
+
+      const button = document.createElement("a");
+      button.href = "";
+      button.setAttribute("role", "button");
+      button.className = "nav-link theme-mode-button";
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
         manualAlternate = !isAlternateActive();
+        writeStoredPreference(manualAlternate);
         applyColorScheme(manualAlternate);
-      };
-    });
+      });
+      item.appendChild(button);
+      return item;
+    }
 
-    document.addEventListener("click", function (event) {
-      const toggle = event.target.closest(selector);
-      if (!toggle) return;
+    function ensureNavbarTarget() {
+      const navList = document.querySelector(".navbar-nav.navbar-nav-scroll.ms-auto");
+      if (navList) return navList;
 
-      event.preventDefault();
-      setToggleMetadata();
-      installFilter();
-      try {
-        if (typeof window.quartoToggleColorScheme === "function") {
-          window.quartoToggleColorScheme();
+      let tools = document.querySelector(".quarto-navbar-tools");
+      if (tools) return tools;
+
+      const container = document.querySelector("#quarto-header .navbar-container");
+      if (!container) return null;
+
+      tools = document.createElement("div");
+      tools.className = "quarto-navbar-tools";
+      container.appendChild(tools);
+      return tools;
+    }
+
+    function initCustomToggle() {
+      document.querySelectorAll(builtInToggleSelector).forEach(function (toggle) {
+        toggle.remove();
+      });
+
+      document.querySelectorAll(".quarto-navbar-tools").forEach(function (tools) {
+        if (!tools.children.length) {
+          tools.remove();
         }
-      } finally {
-        scheduleUninstall();
-      }
-    });
+      });
 
-    systemThemeQuery.addEventListener("change", function (event) {
-      if (manualAlternate !== null) {
-        applyColorScheme(manualAlternate);
-        return;
+      const target = ensureNavbarTarget();
+      if (!target || target.querySelector(customToggleSelector)) return;
+
+      const buttonItem = createButton();
+      target.appendChild(buttonItem);
+
+      const storedPreference = readStoredPreference();
+      const alternate = storedPreference ?? isAlternateActive();
+      activeAlternate = alternate;
+      if (storedPreference !== null) {
+        manualAlternate = storedPreference;
+        applyColorScheme(storedPreference);
+      } else {
+        setDocumentColorScheme(alternate);
+        setBodyClasses(alternate);
+        setButtonState(alternate);
+        syncGiscusTheme(alternate);
       }
 
-      applyColorScheme(event.matches);
+      systemThemeQuery.addEventListener("change", function () {
+        if (manualAlternate !== null) {
+          const storedPreference = readStoredPreference();
+          if (storedPreference === null) {
+            manualAlternate = null;
+          } else {
+            manualAlternate = storedPreference;
+          }
+        }
+
+        if (manualAlternate !== null) {
+          applyColorScheme(manualAlternate);
+          return;
+        }
+
+        const currentAlternate = isAlternateActive();
+        setDocumentColorScheme(currentAlternate);
+        setBodyClasses(currentAlternate);
+        setButtonState(currentAlternate);
+        syncGiscusTheme(currentAlternate);
+      });
+
+      const observer = new MutationObserver(function (mutations) {
+        if (activeAlternate === null) return;
+
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (!(node instanceof Element)) continue;
+            if (
+              node.matches?.("iframe.giscus-frame") ||
+              node.querySelector?.("iframe.giscus-frame")
+            ) {
+              syncGiscusTheme(activeAlternate);
+              return;
+            }
+          }
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      window.setTimeout(initCustomToggle, 0);
     });
   }());
 </script>
