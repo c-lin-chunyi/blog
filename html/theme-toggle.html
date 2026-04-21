@@ -1,18 +1,27 @@
 <script>
   (function () {
+    const storageKey = "quarto-color-scheme";
     const selector = ".quarto-color-scheme-toggle";
     const toggleLabel = "Toggle light/dark switch";
+    const systemThemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
+    let manualAlternate = null;
     let nativeScrollTo = null;
     let uninstallTimer = null;
 
+    try {
+      window.localStorage.removeItem(storageKey);
+    } catch (_) {
+      // Ignore storage access failures and continue without persistence.
+    }
+
     function installFilter() {
-      if (nativeScrollTo) return; // re-entrancy guard
+      if (nativeScrollTo) return;
       nativeScrollTo = window.scrollTo.bind(window);
       window.scrollTo = function () {
         const x = typeof arguments[0] === "object" ? arguments[0].left : arguments[0];
-        const y = typeof arguments[0] === "object" ? arguments[0].top  : arguments[1];
-        if (x === 0 && (y === 0 || y === 1)) return; // swallow Quarto's calls
+        const y = typeof arguments[0] === "object" ? arguments[0].top : arguments[1];
+        if (x === 0 && (y === 0 || y === 1)) return;
         return nativeScrollTo.apply(null, arguments);
       };
     }
@@ -20,12 +29,15 @@
     function scheduleUninstall() {
       if (uninstallTimer) clearTimeout(uninstallTimer);
       uninstallTimer = setTimeout(function () {
-        if (nativeScrollTo) { window.scrollTo = nativeScrollTo; nativeScrollTo = null; }
+        if (nativeScrollTo) {
+          window.scrollTo = nativeScrollTo;
+          nativeScrollTo = null;
+        }
         uninstallTimer = null;
       }, 150);
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    function setToggleMetadata() {
       document.querySelectorAll(selector).forEach(function (toggle) {
         toggle.removeAttribute("onclick");
         toggle.onclick = null;
@@ -33,13 +45,90 @@
         toggle.setAttribute("title", toggleLabel);
         toggle.setAttribute("aria-label", toggleLabel);
       });
+    }
+
+    function setToggleState(alternate) {
+      document.querySelectorAll(selector).forEach(function (toggle) {
+        toggle.classList.toggle("alternate", alternate);
+      });
+    }
+
+    function setBodyColorMode(sheet) {
+      const body = document.body;
+      if (!body || !sheet) return;
+
+      const mode = sheet.getAttribute("data-mode");
+      body.classList.toggle("quarto-dark", mode === "dark");
+      body.classList.toggle("quarto-light", mode !== "dark");
+    }
+
+    function fallbackToggleColorMode(alternate) {
+      const primarySheets = document.querySelectorAll(
+        "link.quarto-color-scheme:not(.quarto-color-alternate)"
+      );
+      const alternateSheets = document.querySelectorAll(
+        "link.quarto-color-scheme.quarto-color-alternate"
+      );
+
+      primarySheets.forEach(function (sheet) {
+        if (sheet.rel !== "stylesheet") sheet.rel = "stylesheet";
+      });
+
+      if (alternate) {
+        alternateSheets.forEach(function (sheet) {
+          sheet.rel = "stylesheet";
+          if (sheet.id === "quarto-bootstrap") setBodyColorMode(sheet);
+        });
+      } else {
+        alternateSheets.forEach(function (sheet) {
+          sheet.rel = "disabled-stylesheet";
+        });
+        const activePrimary = document.querySelector(
+          "link#quarto-bootstrap.quarto-color-scheme:not(.quarto-color-alternate)"
+        );
+        setBodyColorMode(activePrimary);
+      }
+
+      setToggleState(alternate);
+    }
+
+    function applyColorScheme(alternate) {
+      if (typeof toggleColorMode === "function") {
+        toggleColorMode(alternate);
+      } else {
+        fallbackToggleColorMode(alternate);
+      }
+
+      if (typeof toggleGiscusIfUsed === "function") {
+        toggleGiscusIfUsed(alternate, systemThemeQuery.matches);
+      }
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    function isAlternateActive() {
+      return Array.from(
+        document.querySelectorAll("link.quarto-color-scheme.quarto-color-alternate")
+      ).some(function (sheet) {
+        return sheet.rel !== "disabled-stylesheet";
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      setToggleMetadata();
+
+      window.quartoToggleColorScheme = function () {
+        manualAlternate = !isAlternateActive();
+        applyColorScheme(manualAlternate);
+      };
     });
 
     document.addEventListener("click", function (event) {
       const toggle = event.target.closest(selector);
       if (!toggle) return;
-      event.preventDefault();
 
+      event.preventDefault();
+      setToggleMetadata();
       installFilter();
       try {
         if (typeof window.quartoToggleColorScheme === "function") {
@@ -48,6 +137,15 @@
       } finally {
         scheduleUninstall();
       }
+    });
+
+    systemThemeQuery.addEventListener("change", function (event) {
+      if (manualAlternate !== null) {
+        applyColorScheme(manualAlternate);
+        return;
+      }
+
+      applyColorScheme(event.matches);
     });
   }());
 </script>

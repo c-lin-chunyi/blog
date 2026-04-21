@@ -60,7 +60,6 @@ format:
       url: "html/vendor/mathjax-4.0.0/startup.js"
     include-in-header:
       - html/mathjax-stix.html
-    include-after-body:
       - html/theme-toggle.html
     toc: false
     code-link: true
