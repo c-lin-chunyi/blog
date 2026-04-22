@@ -122,72 +122,39 @@
 
 <script>
   (function () {
-    const STORAGE_KEY = "theme-preference";
-    const VALID_PREFERENCES = ["light", "dark", "system"];
-    const DARK_MEDIA = window.matchMedia("(prefers-color-scheme: dark)");
+    const theme = window.__themeBootstrap;
+    if (!theme) return;
+
+    const DARK_MEDIA = theme.darkMedia;
     let giscusObserver = null;
+    const SELECTORS = {
+      switcher: "[data-theme-switcher]",
+      trigger: "[data-theme-switcher-trigger]",
+      icon: "[data-theme-switcher-icon]",
+      label: "[data-theme-switcher-label]",
+      option: "[data-theme-switcher-option]"
+    };
+    const ICONS = {
+      light: "fa-sun",
+      dark: "fa-moon",
+      system: "fa-desktop"
+    };
+    const LABELS = {
+      light: "Light",
+      dark: "Dark",
+      system: "System"
+    };
 
-    function readThemePreference() {
-      try {
-        const value = window.localStorage.getItem(STORAGE_KEY);
-        if (VALID_PREFERENCES.includes(value)) {
-          return value;
-        }
-        if (value !== null) {
-          window.localStorage.removeItem(STORAGE_KEY);
-        }
-      } catch (_) {}
+    function getSwitcherElements() {
+      const switcher = document.querySelector(SELECTORS.switcher);
+      if (!switcher) return null;
 
-      return "system";
-    }
-
-    function resolveTheme(pref) {
-      if (pref === "light" || pref === "dark") return pref;
-      return DARK_MEDIA.matches ? "dark" : "light";
-    }
-
-    function syncLegacyThemeState(resolved) {
-      try {
-        window.localStorage.setItem(
-          "quarto-color-scheme",
-          resolved === "dark" ? "alternate" : "default"
-        );
-        window.localStorage.removeItem("theme-mode-preference");
-      } catch (_) {}
-    }
-
-    function setRootThemeState(resolved, preference) {
-      if (window.__themeBootstrap?.setRootThemeState) {
-        window.__themeBootstrap.setRootThemeState(resolved, preference);
-        return;
-      }
-
-      document.documentElement.dataset.theme = resolved;
-      document.documentElement.dataset.themePreference = preference;
-      document.documentElement.setAttribute("data-bs-theme", resolved);
-      document.documentElement.style.colorScheme = resolved;
-      document.documentElement.classList.toggle("quarto-dark", resolved === "dark");
-      document.documentElement.classList.toggle("quarto-light", resolved === "light");
-    }
-
-    function applyStylesheets(resolved) {
-      const primarySheets = document.querySelectorAll(
-        "link.quarto-color-scheme:not(.quarto-color-alternate)"
-      );
-      primarySheets.forEach(function (sheet) {
-        if (sheet.rel !== "stylesheet") {
-          sheet.rel = "stylesheet";
-        }
-      });
-
-      const alternateSheets = document.querySelectorAll(
-        "link.quarto-color-scheme.quarto-color-alternate"
-      );
-      alternateSheets.forEach(function (sheet) {
-        sheet.rel = resolved === "dark" ? "stylesheet" : "disabled-stylesheet";
-      });
-
-      return primarySheets.length + alternateSheets.length > 0;
+      return {
+        icon: switcher.querySelector(SELECTORS.icon),
+        label: switcher.querySelector(SELECTORS.label),
+        options: Array.from(switcher.querySelectorAll(SELECTORS.option)),
+        trigger: switcher.querySelector(SELECTORS.trigger)
+      };
     }
 
     function syncGiscusTheme(resolved) {
@@ -231,77 +198,30 @@
       });
     }
 
-    function applyTheme(resolved, preference) {
-      applyStylesheets(resolved);
-      syncLegacyThemeState(resolved);
-      setRootThemeState(resolved, preference);
-
-      if (document.body) {
-        document.body.classList.toggle("quarto-dark", resolved === "dark");
-        document.body.classList.toggle("quarto-light", resolved === "light");
-      }
-
-      ensureGiscusThemeSync(resolved);
-    }
-
-    window.readThemePreference = readThemePreference;
-    window.resolveTheme = resolveTheme;
-    window.applyTheme = applyTheme;
-
-    const preference = document.documentElement.dataset.themePreference || readThemePreference();
-    const resolved = document.documentElement.dataset.theme || resolveTheme(preference);
-    applyTheme(resolved, preference);
-
-    if (!applyStylesheets(resolved)) {
-      const observer = new MutationObserver(function () {
-        if (applyStylesheets(resolved)) {
-          observer.disconnect();
-        }
-      });
-
-      observer.observe(document.documentElement, {
-        childList: true,
-        subtree: true
-      });
-    }
-  }());
-</script>
-
-<script>
-  (function () {
-    const STORAGE_KEY = "theme-preference";
-    const VALID_PREFERENCES = ["light", "dark", "system"];
-    const DARK_MEDIA = window.matchMedia("(prefers-color-scheme: dark)");
-    const ICONS = {
-      light: "fa-sun",
-      dark: "fa-moon",
-      system: "fa-desktop"
-    };
-    const LABELS = {
-      light: "Light",
-      dark: "Dark",
-      system: "System"
-    };
-
     function updateTriggerUI(preference) {
-      const trigger = document.querySelector("#theme-switcher-button");
-      if (!trigger) return;
+      const elements = getSwitcherElements();
+      if (!elements?.trigger) return;
 
-      const icon = trigger.querySelector(".theme-switcher-icon");
-      const label = trigger.querySelector(".theme-switcher-label");
-
-      if (icon) {
-        icon.classList.remove("fa-sun", "fa-moon", "fa-desktop");
-        icon.classList.add(ICONS[preference]);
+      if (elements.icon) {
+        elements.icon.classList.remove("fa-sun", "fa-moon", "fa-desktop");
+        elements.icon.classList.add(ICONS[preference]);
       }
 
-      if (label) {
-        label.textContent = LABELS[preference];
+      if (elements.label) {
+        elements.label.textContent = LABELS[preference];
       }
 
-      document.querySelectorAll(".theme-switcher-option").forEach(function (option) {
+      elements.options.forEach(function (option) {
         option.classList.toggle("active", option.dataset.themeValue === preference);
       });
+    }
+
+    function applyThemePreference(preference) {
+      const resolved = theme.resolveTheme(preference);
+      theme.applyTheme(resolved, preference);
+      updateTriggerUI(preference);
+      ensureGiscusThemeSync(resolved);
+      return resolved;
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -315,31 +235,32 @@
         }
       });
 
-      const currentPreference = window.readThemePreference();
-      window.applyTheme(window.resolveTheme(currentPreference), currentPreference);
-      updateTriggerUI(currentPreference);
+      const currentPreference = document.documentElement.dataset.themePreference
+        || theme.readThemePreference();
+      applyThemePreference(currentPreference);
 
-      document.querySelectorAll(".theme-switcher-option").forEach(function (option) {
+      const elements = getSwitcherElements();
+      if (!elements) return;
+
+      elements.options.forEach(function (option) {
         option.addEventListener("click", function () {
           const nextPreference = option.dataset.themeValue;
-          if (!VALID_PREFERENCES.includes(nextPreference)) return;
+          if (!theme.VALID_PREFERENCES.includes(nextPreference)) return;
 
           try {
-            window.localStorage.setItem(STORAGE_KEY, nextPreference);
+            window.localStorage.setItem(theme.STORAGE_KEY, nextPreference);
           } catch (_) {}
 
-          window.applyTheme(window.resolveTheme(nextPreference), nextPreference);
-          updateTriggerUI(nextPreference);
+          applyThemePreference(nextPreference);
           window.location.reload();
         });
       });
     });
 
-    DARK_MEDIA.addEventListener("change", function () {
-      const currentPreference = window.readThemePreference();
+    DARK_MEDIA?.addEventListener("change", function () {
+      const currentPreference = theme.readThemePreference();
       if (currentPreference === "system") {
-        window.applyTheme(window.resolveTheme("system"), "system");
-        updateTriggerUI("system");
+        applyThemePreference("system");
       }
     });
   }());

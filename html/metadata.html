@@ -26,6 +26,9 @@ $endif$
   (function () {
     const STORAGE_KEY = "theme-preference";
     const VALID_PREFERENCES = ["light", "dark", "system"];
+    const DARK_MEDIA = typeof window.matchMedia === "function"
+      ? window.matchMedia("(prefers-color-scheme: dark)")
+      : null;
 
     function readThemePreference() {
       try {
@@ -46,13 +49,7 @@ $endif$
         return preference;
       }
 
-      try {
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-      } catch (_) {
-        return "light";
-      }
+      return DARK_MEDIA?.matches ? "dark" : "light";
     }
 
     function syncLegacyThemeState(resolved) {
@@ -76,6 +73,13 @@ $endif$
       root.classList.add(resolved === "dark" ? "quarto-dark" : "quarto-light");
     }
 
+    function setBodyThemeState(resolved) {
+      if (!document.body) return;
+
+      document.body.classList.toggle("quarto-dark", resolved === "dark");
+      document.body.classList.toggle("quarto-light", resolved === "light");
+    }
+
     function applyStylesheets(resolved) {
       const primarySheets = document.querySelectorAll(
         "link.quarto-color-scheme:not(.quarto-color-alternate)"
@@ -97,24 +101,37 @@ $endif$
       return primarySheets.length + alternateSheets.length > 0;
     }
 
+    function applyTheme(resolved, preference) {
+      applyStylesheets(resolved);
+      syncLegacyThemeState(resolved);
+      setRootThemeState(resolved, preference);
+      setBodyThemeState(resolved);
+      themeBootstrap.preference = preference;
+      themeBootstrap.resolved = resolved;
+      return resolved;
+    }
+
+    const themeBootstrap = {
+      STORAGE_KEY: STORAGE_KEY,
+      VALID_PREFERENCES: VALID_PREFERENCES,
+      darkMedia: DARK_MEDIA,
+      readThemePreference: readThemePreference,
+      resolveTheme: resolveTheme,
+      syncLegacyThemeState: syncLegacyThemeState,
+      setRootThemeState: setRootThemeState,
+      applyStylesheets: applyStylesheets,
+      applyTheme: applyTheme
+    };
+
     const preference = readThemePreference();
     const resolved = resolveTheme(preference);
 
-    syncLegacyThemeState(resolved);
-    setRootThemeState(resolved, preference);
+    window.__themeBootstrap = themeBootstrap;
+    applyTheme(resolved, preference);
 
-    window.__themeBootstrap = {
-      applyStylesheets: applyStylesheets,
-      preference: preference,
-      readThemePreference: readThemePreference,
-      resolveTheme: resolveTheme,
-      resolved: resolved,
-      setRootThemeState: setRootThemeState
-    };
-
-    if (!applyStylesheets(resolved)) {
+    if (!themeBootstrap.applyStylesheets(resolved)) {
       const observer = new MutationObserver(function () {
-        if (applyStylesheets(resolved)) {
+        if (themeBootstrap.applyStylesheets(resolved)) {
           observer.disconnect();
         }
       });

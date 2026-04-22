@@ -34,10 +34,10 @@ website:
       - text: AI Usage Disclosure
         href: ai/index.qmd
     right:
+      - icon: linkedin
+        href: https://www.linkedin.com/in/chunyi-lin-630945380/
       - icon: github
         href: https://github.com/c-lin-chunyi
-      - icon: envelope
-        href: mailto:c.lin.chunyi@gmail.com
   page-footer:
     left: |
       <span class="faux-block">{{< fa brands creative-commons >}} {{< var years >}} {{< var author-name >}}</span>
@@ -48,7 +48,7 @@ website:
     right: |
       <div class="faux-block">Made with {{< fa brands r-project >}} and [Quarto](https://quarto.org/)</div>
       <div class="faux-block">[View the source at {{< fa brands github >}} GitHub](https://github.com/c-lin-chunyi/blog)</div>
-      <div class="faux-block"><div class="theme-switcher dropdown"><button class="theme-switcher-trigger" type="button" id="theme-switcher-button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Color theme"><i class="fa-solid fa-desktop theme-switcher-icon" aria-hidden="true"></i><span class="theme-switcher-label">System</span></button><ul class="dropdown-menu theme-switcher-menu" aria-labelledby="theme-switcher-button"><li><button class="dropdown-item theme-switcher-option" type="button" data-theme-value="light"><i class="fa-solid fa-sun" aria-hidden="true"></i><span>Light</span><i class="fa-solid fa-check theme-switcher-check" aria-hidden="true"></i></button></li><li><button class="dropdown-item theme-switcher-option" type="button" data-theme-value="dark"><i class="fa-solid fa-moon" aria-hidden="true"></i><span>Dark</span><i class="fa-solid fa-check theme-switcher-check" aria-hidden="true"></i></button></li><li><button class="dropdown-item theme-switcher-option" type="button" data-theme-value="system"><i class="fa-solid fa-desktop" aria-hidden="true"></i><span>System</span><i class="fa-solid fa-check theme-switcher-check" aria-hidden="true"></i></button></li></ul></div></div>
+      <div class="faux-block"><div class="theme-switcher dropdown" data-theme-switcher><button class="theme-switcher-trigger" type="button" id="theme-switcher-button" data-theme-switcher-trigger data-bs-toggle="dropdown" aria-expanded="false" aria-label="Color theme"><i class="fa-solid fa-desktop theme-switcher-icon" data-theme-switcher-icon aria-hidden="true"></i><span class="theme-switcher-label" data-theme-switcher-label>System</span></button><ul class="dropdown-menu theme-switcher-menu" aria-labelledby="theme-switcher-button"><li><button class="dropdown-item theme-switcher-option" type="button" data-theme-switcher-option data-theme-value="light"><i class="fa-solid fa-sun" aria-hidden="true"></i><span>Light</span><i class="fa-solid fa-check theme-switcher-check" aria-hidden="true"></i></button></li><li><button class="dropdown-item theme-switcher-option" type="button" data-theme-switcher-option data-theme-value="dark"><i class="fa-solid fa-moon" aria-hidden="true"></i><span>Dark</span><i class="fa-solid fa-check theme-switcher-check" aria-hidden="true"></i></button></li><li><button class="dropdown-item theme-switcher-option" type="button" data-theme-switcher-option data-theme-value="system"><i class="fa-solid fa-desktop" aria-hidden="true"></i><span>System</span><i class="fa-solid fa-check theme-switcher-check" aria-hidden="true"></i></button></li></ul></div></div>
 
 format:
   html:
