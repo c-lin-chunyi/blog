@@ -41,6 +41,12 @@
   max-height: 48px;
 }
 
+@include navbar-collapse-down {
+  #quarto-header .navbar-brand-container > .navbar-brand:not(.navbar-brand-logo) {
+    display: none;
+  }
+}
+
 #quarto-header::before,
 #quarto-header::after,
 #quarto-header > nav.navbar::before,
@@ -63,6 +69,19 @@
 
 #title-block-header.quarto-title-block .quarto-title-banner a {
   color: inherit;
+}
+
+.cv-pdf-embed {
+  display: block;
+  width: 100%;
+  height: $cv-pdf-embed-height;
+  min-height: $cv-pdf-embed-min-height;
+  border: 1px solid var(--bs-border-color, rgba(0, 0, 0, 0.15));
+
+  @include mobile-down {
+    height: $cv-pdf-embed-height-mobile;
+    min-height: $cv-pdf-embed-min-height-mobile;
+  }
 }
 
 // Typography

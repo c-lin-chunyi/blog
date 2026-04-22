@@ -72,7 +72,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@include tablet-up {
   .nav-footer {
     flex-direction: row;
 

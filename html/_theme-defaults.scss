@@ -5,6 +5,35 @@ $min-contrast-ratio:   1.85 !default;
 $font-size-base:              1.1rem !default;
 $headings-font-weight:        700 !default;
 
+// Responsive
+
+$navbar-collapse-max-width:   991.98px !default;
+$mobile-max-width:            $navbar-collapse-max-width !default;
+$tablet-min-width:            992px !default;
+
+$cv-pdf-embed-height:         80vh !default;
+$cv-pdf-embed-min-height:     42rem !default;
+$cv-pdf-embed-height-mobile:  70vh !default;
+$cv-pdf-embed-min-height-mobile: 32rem !default;
+
+@mixin mobile-down {
+  @media (max-width: $mobile-max-width) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: $tablet-min-width) {
+    @content;
+  }
+}
+
+@mixin navbar-collapse-down {
+  @media (max-width: $navbar-collapse-max-width) {
+    @content;
+  }
+}
+
 // Tables
 
 $table-bg-scale:              0% !default;
