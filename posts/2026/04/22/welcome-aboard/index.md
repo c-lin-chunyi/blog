@@ -1,0 +1,30 @@
+---
+title: "Welcome Aboard!"
+date: "2026-04-22"
+categories: [welcome]
+bibliography: references.bib
+csl: chicago-notes-bibliography.csl
+suppress-bibliography: true
+---
+
+*What is a blog?*
+
+> A frequently updated website, typically run by a single person and consisting of personal observations arranged 
+> chronologically (usually with the most recent at the top), excerpts from other sources, hyperlinks to other sites, 
+> etc.; an online journal or diary; = weblog n. 2 [@oed-blog-2025]
+
+> Blog, in full Web logor Weblog, online journal where an individual, group, or corporation presents a record of 
+> activities, thoughts, or beliefs. Some blogs operate mainly as news filters, collecting various online sources and 
+> adding short comments and Internet links. Other blogs concentrate on presenting original material. In addition, 
+> many blogs provide a forum to allow visitors to leave comments and interact with the publisher. “To blog” is the 
+> act of composing material for a blog. Materials are largely written, but pictures, audio, and videos are important 
+> elements of many blogs. The “blogosphere” is the online universe of blogs. [@britannica-blog-2026]
+
+---
+
+After some wrestling with scss and html files, this little site finally works properly. 
+
+I am not much of a writer, so I won't update this site frequently. 
+
+Future posts may range from research and technical notes, to my personal reflections on 
+philosophy, psychology, AI consciousness, academia, whatever. 

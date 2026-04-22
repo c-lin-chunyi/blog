@@ -94,6 +94,17 @@ blockquote {
   font-style: italic;
 }
 
+// Let long citation URLs wrap inside margin notes and bibliography entries.
+.column-margin,
+.column-margin a,
+.margin-sidebar,
+.margin-sidebar a,
+[role="doc-biblioref"],
+#quarto-bibliography a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 footer {
   font-size: $font-size-sm;
 }
@@ -181,4 +192,30 @@ table,
 
 .list-group {
   font-size: $font-size-sm;
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  #title-block-header.page-columns,
+  #title-block-header .quarto-title-banner.page-columns,
+  #quarto-content.page-columns {
+    display: grid;
+    gap: 0;
+    grid-template-columns:
+      [screen-start] 1.5em
+      [screen-start-inset page-start page-start-inset body-start-outset] 5fr
+      [body-start] 1.5em
+      [body-content-start] minmax(500px, calc(800px - 3em))
+      [body-content-end] 1.5em
+      [body-end body-end-outset page-end-inset page-end] 5fr
+      [screen-end-inset] 1.5em
+      [screen-end];
+  }
+
+  #quarto-margin-sidebar {
+    display: none;
+  }
+
+  .giscus-comments {
+    grid-column: body-content-start / body-content-end;
+  }
 }
