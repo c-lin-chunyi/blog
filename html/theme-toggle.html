@@ -126,7 +126,6 @@
     if (!theme) return;
 
     const DARK_MEDIA = theme.darkMedia;
-    let giscusObserver = null;
     const SELECTORS = {
       switcher: "[data-theme-switcher]",
       trigger: "[data-theme-switcher-trigger]",
@@ -157,47 +156,6 @@
       };
     }
 
-    function syncGiscusTheme(resolved) {
-      const frame = document.querySelector("iframe.giscus-frame");
-      const baseTheme = document.querySelector("#giscus-base-theme")?.value ?? "light";
-      const altTheme = document.querySelector("#giscus-alt-theme")?.value ?? "dark";
-      const giscusTheme = resolved === "dark" ? altTheme : baseTheme;
-
-      if (frame && frame.contentWindow) {
-        frame.contentWindow.postMessage(
-          { giscus: { setConfig: { theme: giscusTheme } } },
-          "https://giscus.app"
-        );
-        return true;
-      }
-
-      return false;
-    }
-
-    function ensureGiscusThemeSync(resolved) {
-      if (syncGiscusTheme(resolved)) {
-        if (giscusObserver) {
-          giscusObserver.disconnect();
-          giscusObserver = null;
-        }
-        return;
-      }
-
-      if (giscusObserver) return;
-
-      giscusObserver = new MutationObserver(function () {
-        if (syncGiscusTheme(resolved)) {
-          giscusObserver.disconnect();
-          giscusObserver = null;
-        }
-      });
-
-      giscusObserver.observe(document.documentElement, {
-        childList: true,
-        subtree: true
-      });
-    }
-
     function updateTriggerUI(preference) {
       const elements = getSwitcherElements();
       if (!elements?.trigger) return;
@@ -220,7 +178,6 @@
       const resolved = theme.resolveTheme(preference);
       theme.applyTheme(resolved, preference);
       updateTriggerUI(preference);
-      ensureGiscusThemeSync(resolved);
       return resolved;
     }
 

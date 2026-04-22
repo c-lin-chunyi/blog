@@ -65,6 +65,8 @@ format:
       - html/fonts.html
       - html/mathjax-stix.html
       - html/theme-toggle.html
+    include-after-body:
+      - html/giscus.html
     toc: false
     code-link: true
     anchor-sections: true
