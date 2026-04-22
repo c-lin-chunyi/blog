@@ -1,10 +1,10 @@
 .nav-footer {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   border: 0;
   color: $footer-fg;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   font-family: var(--bs-body-font-family);
   font-size: 0.95rem;
   line-height: 1.35;
@@ -42,7 +42,9 @@
   .nav-footer-left,
   .nav-footer-center,
   .nav-footer-right {
+    flex: 0 0 auto;
     min-height: 2rem;
+    min-width: 0;
     order: initial;
     text-align: center;
     width: 100%;
