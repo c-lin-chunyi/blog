@@ -1,0 +1,128 @@
+<meta charset="utf-8" />
+$if(quarto-version)$
+<meta name="generator" content="quarto-$quarto-version$" />
+$else$
+<meta name="generator" content="quarto" />
+$endif$
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+
+$for(author-meta)$
+<meta name="author" content="$author-meta$" />
+$endfor$
+$if(date-meta)$
+<meta name="dcterms.date" content="$date-meta$" />
+$endif$
+$if(keywords)$
+<meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+$endif$
+$if(description-meta)$
+<meta name="description" content="$description-meta$" />
+$endif$
+
+<title>$pagetitle$$if(title-prefix)$ – $title-prefix$$endif$</title>
+
+<script>
+  (function () {
+    const STORAGE_KEY = "theme-preference";
+    const VALID_PREFERENCES = ["light", "dark", "system"];
+
+    function readThemePreference() {
+      try {
+        const value = window.localStorage.getItem(STORAGE_KEY);
+        if (VALID_PREFERENCES.includes(value)) {
+          return value;
+        }
+        if (value !== null) {
+          window.localStorage.removeItem(STORAGE_KEY);
+        }
+      } catch (_) {}
+
+      return "system";
+    }
+
+    function resolveTheme(preference) {
+      if (preference === "light" || preference === "dark") {
+        return preference;
+      }
+
+      try {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      } catch (_) {
+        return "light";
+      }
+    }
+
+    function syncLegacyThemeState(resolved) {
+      try {
+        window.localStorage.setItem(
+          "quarto-color-scheme",
+          resolved === "dark" ? "alternate" : "default"
+        );
+        window.localStorage.removeItem("theme-mode-preference");
+      } catch (_) {}
+    }
+
+    function setRootThemeState(resolved, preference) {
+      const root = document.documentElement;
+
+      root.dataset.theme = resolved;
+      root.dataset.themePreference = preference;
+      root.setAttribute("data-bs-theme", resolved);
+      root.style.colorScheme = resolved;
+      root.classList.remove("quarto-light", "quarto-dark");
+      root.classList.add(resolved === "dark" ? "quarto-dark" : "quarto-light");
+    }
+
+    function applyStylesheets(resolved) {
+      const primarySheets = document.querySelectorAll(
+        "link.quarto-color-scheme:not(.quarto-color-alternate)"
+      );
+      const alternateSheets = document.querySelectorAll(
+        "link.quarto-color-scheme.quarto-color-alternate"
+      );
+
+      primarySheets.forEach(function (sheet) {
+        if (sheet.rel !== "stylesheet") {
+          sheet.rel = "stylesheet";
+        }
+      });
+
+      alternateSheets.forEach(function (sheet) {
+        sheet.rel = resolved === "dark" ? "stylesheet" : "disabled-stylesheet";
+      });
+
+      return primarySheets.length + alternateSheets.length > 0;
+    }
+
+    const preference = readThemePreference();
+    const resolved = resolveTheme(preference);
+
+    syncLegacyThemeState(resolved);
+    setRootThemeState(resolved, preference);
+
+    window.__themeBootstrap = {
+      applyStylesheets: applyStylesheets,
+      preference: preference,
+      readThemePreference: readThemePreference,
+      resolveTheme: resolveTheme,
+      resolved: resolved,
+      setRootThemeState: setRootThemeState
+    };
+
+    if (!applyStylesheets(resolved)) {
+      const observer = new MutationObserver(function () {
+        if (applyStylesheets(resolved)) {
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(document.head || document.documentElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }());
+</script>

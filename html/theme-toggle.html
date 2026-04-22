@@ -123,7 +123,6 @@
 <script>
   (function () {
     const STORAGE_KEY = "theme-preference";
-    const LEGACY_KEYS = ["quarto-color-scheme", "theme-mode-preference"];
     const VALID_PREFERENCES = ["light", "dark", "system"];
     const DARK_MEDIA = window.matchMedia("(prefers-color-scheme: dark)");
     let giscusObserver = null;
@@ -155,6 +154,20 @@
         );
         window.localStorage.removeItem("theme-mode-preference");
       } catch (_) {}
+    }
+
+    function setRootThemeState(resolved, preference) {
+      if (window.__themeBootstrap?.setRootThemeState) {
+        window.__themeBootstrap.setRootThemeState(resolved, preference);
+        return;
+      }
+
+      document.documentElement.dataset.theme = resolved;
+      document.documentElement.dataset.themePreference = preference;
+      document.documentElement.setAttribute("data-bs-theme", resolved);
+      document.documentElement.style.colorScheme = resolved;
+      document.documentElement.classList.toggle("quarto-dark", resolved === "dark");
+      document.documentElement.classList.toggle("quarto-light", resolved === "light");
     }
 
     function applyStylesheets(resolved) {
@@ -221,12 +234,7 @@
     function applyTheme(resolved, preference) {
       applyStylesheets(resolved);
       syncLegacyThemeState(resolved);
-
-      document.documentElement.dataset.theme = resolved;
-      if (preference) {
-        document.documentElement.dataset.themePreference = preference;
-      }
-      document.documentElement.style.colorScheme = resolved;
+      setRootThemeState(resolved, preference);
 
       if (document.body) {
         document.body.classList.toggle("quarto-dark", resolved === "dark");
@@ -240,12 +248,9 @@
     window.resolveTheme = resolveTheme;
     window.applyTheme = applyTheme;
 
-    const preference = readThemePreference();
-    const resolved = resolveTheme(preference);
-    syncLegacyThemeState(resolved);
-    document.documentElement.dataset.theme = resolved;
-    document.documentElement.dataset.themePreference = preference;
-    document.documentElement.style.colorScheme = resolved;
+    const preference = document.documentElement.dataset.themePreference || readThemePreference();
+    const resolved = document.documentElement.dataset.theme || resolveTheme(preference);
+    applyTheme(resolved, preference);
 
     if (!applyStylesheets(resolved)) {
       const observer = new MutationObserver(function () {

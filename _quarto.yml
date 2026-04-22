@@ -55,6 +55,8 @@ format:
     theme:
       light: html/light.scss
       dark: html/dark.scss
+    template-partials:
+      - html/metadata.html
     respect-user-color-scheme: true
     html-math-method:
       method: mathjax
