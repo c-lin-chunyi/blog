@@ -60,7 +60,7 @@ format:
     respect-user-color-scheme: true
     html-math-method:
       method: mathjax
-      url: "html/vendor/mathjax-4.0.0/startup.js"
+      url: "html/vendor/mathjax-4.0.0/tex-svg-nofont.js"
     include-in-header:
       - html/fonts.html
       - html/mathjax-stix.html

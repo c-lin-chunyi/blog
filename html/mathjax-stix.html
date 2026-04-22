@@ -1,13 +1,49 @@
 <script>
 window.MathJax = {
   loader: {
-    load: ["input/tex", "output/chtml"],
     paths: {
-      "mathjax-stix2": "/html/vendor/mathjax-stix2-font-4.0.0"
+      "mathjax-stix2": "/html/vendor/mathjax-stix2-font"
     }
   },
   output: {
     font: "[mathjax-stix2]"
+  },
+  svg: {
+    fontCache: "local"
+  },
+  options: {
+    enableMenu: false,
+    enableExplorer: false,
+    enableSpeech: false,
+    enableBraille: false,
+    menuOptions: {
+      settings: {
+        enrich: false,
+        collapsible: false,
+        assistiveMml: false,
+        speech: false,
+        braille: false,
+        inTabOrder: false
+      }
+    },
+    a11y: {
+      speech: false,
+      braille: false,
+      subtitles: false,
+      viewBraille: false,
+      help: false,
+      voicing: false,
+      highlight: "None",
+      magnification: "None",
+      keyMagnifier: false,
+      mouseMagnifier: false,
+      infoType: false,
+      infoRole: false,
+      infoPrefix: false,
+      treeColoring: false,
+      flame: false,
+      hover: false
+    }
   }
 };
 </script>
