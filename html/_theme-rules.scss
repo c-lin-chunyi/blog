@@ -38,7 +38,23 @@
 }
 
 #quarto-header .navbar-logo {
+  display: block;
+  width: 48px;
+  height: 48px;
   max-height: 48px;
+  min-width: 48px;
+  padding-right: 0;
+  object-fit: contain;
+}
+
+#quarto-header .navbar-brand.navbar-brand-logo {
+  display: inline-flex;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.25rem;
 }
 
 body.nav-fixed {
