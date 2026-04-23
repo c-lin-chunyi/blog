@@ -1,0 +1,35 @@
+---
+title: "404 Not Found"
+title-block-banner: true
+---
+
+::: {.fs-3}
+The page that you are looking for may have been removed, had its name changed, or is temporarily unavailable.
+
+Try using the {{< fa magnifying-glass >}} **search button** in the top right corner.
+
+Taking you back to the [home page](/) in **<span id="redirect-countdown">10</span>** seconds.
+:::
+
+<script>
+  window.addEventListener("DOMContentLoaded", function () {
+    const redirectUrl = "/";
+    let secondsRemaining = 10;
+    const countdown = document.getElementById("redirect-countdown");
+
+    if (!countdown) return;
+
+    const timer = window.setInterval(function () {
+      secondsRemaining -= 1;
+
+      if (secondsRemaining <= 0) {
+        countdown.textContent = "0";
+        window.clearInterval(timer);
+        window.location.replace(redirectUrl);
+        return;
+      }
+
+      countdown.textContent = String(secondsRemaining);
+    }, 1000);
+  });
+</script>
