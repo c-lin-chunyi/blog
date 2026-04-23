@@ -1,37 +1,67 @@
 <script>
-  window.addEventListener("DOMContentLoaded", function () {
-    const page = document.querySelector("#quarto-content.page-layout-article");
-    const content = document.querySelector("main#quarto-document-content");
-    const path = window.location.pathname.replace(/\/index\.html$/, "/");
+  (function () {
+    function getGiscusTheme() {
+      return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    }
 
-    if (!page || !content || document.querySelector(".giscus")) return;
-    if (!path.includes("/posts/")) return;
+    function syncGiscusTheme() {
+      const theme = getGiscusTheme();
+      const script = document.querySelector(".giscus script");
+      if (script) {
+        script.dataset.theme = theme;
+      }
 
-    const comments = document.createElement("section");
-    comments.className = "giscus-comments";
-    comments.setAttribute("aria-label", "Comments");
-    comments.innerHTML = "<h2>Comments</h2><div class=\"giscus\"></div>";
+      const iframe = document.querySelector("iframe.giscus-frame");
+      if (!iframe) return;
 
-    content.insertAdjacentElement("afterend", comments);
+      iframe.contentWindow.postMessage({
+        giscus: {
+          setConfig: {
+            theme: theme
+          }
+        }
+      }, "https://giscus.app");
+    }
 
-    const script = document.createElement("script");
-    script.src = "https://giscus.app/client.js";
-    script.async = true;
-    script.crossOrigin = "anonymous";
-    script.dataset.repo = "c-lin-chunyi/blog";
-    script.dataset.repoId = "R_kgDOSGBNyg";
-    script.dataset.category = "Blog comments";
-    script.dataset.categoryId = "DIC_kwDOSGBNys4C7Uf1";
-    script.dataset.mapping = "pathname";
-    script.dataset.reactionsEnabled = "1";
-    script.dataset.emitMetadata = "0";
-    script.dataset.inputPosition = "top";
-    script.dataset.loading = "lazy";
-    script.dataset.lang = "en";
-    script.dataset.theme = document.documentElement.dataset.theme === "dark"
-      ? "dark"
-      : "light";
+    window.addEventListener("DOMContentLoaded", function () {
+      const page = document.querySelector("#quarto-content.page-layout-article");
+      const content = document.querySelector("main#quarto-document-content");
+      const path = window.location.pathname.replace(/\/index\.html$/, "/");
 
-    comments.querySelector(".giscus").appendChild(script);
-  });
+      if (!page || !content || document.querySelector(".giscus")) return;
+      if (!path.includes("/posts/")) return;
+
+      const comments = document.createElement("section");
+      comments.className = "giscus-comments";
+      comments.setAttribute("aria-label", "Comments");
+      comments.innerHTML = "<h2>Comments</h2><div class=\"giscus\"></div>";
+
+      content.insertAdjacentElement("afterend", comments);
+
+      const script = document.createElement("script");
+      script.src = "https://giscus.app/client.js";
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      script.dataset.repo = "c-lin-chunyi/blog";
+      script.dataset.repoId = "R_kgDOSGBNyg";
+      script.dataset.category = "Blog comments";
+      script.dataset.categoryId = "DIC_kwDOSGBNys4C7Uf1";
+      script.dataset.mapping = "pathname";
+      script.dataset.reactionsEnabled = "1";
+      script.dataset.emitMetadata = "0";
+      script.dataset.inputPosition = "top";
+      script.dataset.loading = "lazy";
+      script.dataset.lang = "en";
+      script.dataset.theme = getGiscusTheme();
+
+      comments.querySelector(".giscus").appendChild(script);
+      script.addEventListener("load", syncGiscusTheme);
+
+      const themeObserver = new MutationObserver(syncGiscusTheme);
+      themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+      });
+    });
+  }());
 </script>

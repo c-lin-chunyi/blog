@@ -143,6 +143,61 @@
       dark: "Dark",
       system: "System"
     };
+    const NO_SCROLL_RESTORE_KEY = "theme-toggle-no-scroll-restore";
+
+    function setManualScrollRestoration() {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+    }
+
+    function setAutoScrollRestoration() {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "auto";
+      }
+    }
+
+    function scrollToTop() {
+      window.scrollTo(0, 0);
+    }
+
+    function resetScrollAfterThemeReload() {
+      let shouldResetScroll = false;
+
+      try {
+        shouldResetScroll = window.sessionStorage.getItem(NO_SCROLL_RESTORE_KEY) === "true";
+        if (shouldResetScroll) {
+          window.sessionStorage.removeItem(NO_SCROLL_RESTORE_KEY);
+        }
+      } catch (_) {}
+
+      if (!shouldResetScroll) return;
+
+      setManualScrollRestoration();
+      scrollToTop();
+
+      window.addEventListener("pageshow", scrollToTop, { once: true });
+      window.addEventListener("load", function () {
+        window.requestAnimationFrame(function () {
+          scrollToTop();
+          window.setTimeout(function () {
+            scrollToTop();
+            setAutoScrollRestoration();
+          }, 100);
+        });
+      }, { once: true });
+    }
+
+    function reloadWithoutScrollRestoration() {
+      try {
+        window.sessionStorage.setItem(NO_SCROLL_RESTORE_KEY, "true");
+      } catch (_) {}
+
+      setManualScrollRestoration();
+      window.location.reload();
+    }
+
+    resetScrollAfterThemeReload();
 
     function getSwitcherElements() {
       const switcher = document.querySelector(SELECTORS.switcher);
@@ -209,7 +264,7 @@
           } catch (_) {}
 
           applyThemePreference(nextPreference);
-          window.location.reload();
+          reloadWithoutScrollRestoration();
         });
       });
     });

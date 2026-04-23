@@ -41,6 +41,14 @@
   max-height: 48px;
 }
 
+body.nav-fixed {
+  padding-top: 77px;
+}
+
+#quarto-search {
+  min-width: 40px;
+}
+
 @include navbar-collapse-down {
   #quarto-header .navbar-brand-container > .navbar-brand:not(.navbar-brand-logo) {
     display: none;
