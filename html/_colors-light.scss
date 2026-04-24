@@ -34,6 +34,11 @@ $theme-surface-active-bg:     $gray-3;
 // Navbar and title block
 
 $navbar-bg: $theme-surface-bg;
+$navbar-fg: rgba($gray-12, .72);
+$navbar-hl: $gray-12;
+$navbar-brand: $gray-12;
+$navbar-brand-hl: $gray-12;
+$navbar-toggler-border-color: rgba($gray-12, .16);
 $title-block-banner-bg: $theme-surface-bg;
 $title-block-banner-color: $gray-12;
 
@@ -102,15 +107,6 @@ $nav-tabs-link-hover-border-color:    $border-color $border-color transparent;
 $nav-tabs-link-active-color:          $body-color;
 $nav-tabs-link-active-bg:             $body-bg;
 $nav-tabs-link-active-border-color:   $border-color $border-color transparent;
-
-// Navbar
-
-$navbar-dark-color:                   rgba($body-color, .72);
-$navbar-dark-hover-color:             $body-color;
-$navbar-light-color:                  rgba($body-color, .72);
-$navbar-light-hover-color:            $body-color;
-$navbar-light-active-color:           $body-color;
-$navbar-light-toggler-border-color:   $border-color;
 
 // Cards
 

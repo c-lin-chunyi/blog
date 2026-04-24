@@ -22,6 +22,47 @@ $endif$
 
 <title>$pagetitle$$if(title-prefix)$ – $title-prefix$$endif$</title>
 
+<style>
+  /*
+   * Critical navbar sizing. This ships before external CSS so slow network
+   * loads do not briefly paint a short navbar and then shift the page down
+   * when the logo/theme CSS arrives.
+   */
+  :root {
+    --theme-navbar-logo-size: 48px;
+    --theme-navbar-fixed-offset: 77px;
+  }
+
+  #quarto-header,
+  #quarto-header > nav.navbar {
+    min-height: var(--theme-navbar-fixed-offset);
+  }
+
+  body.nav-fixed {
+    padding-top: var(--theme-navbar-fixed-offset);
+  }
+
+  #quarto-header .navbar-logo {
+    display: block;
+    width: var(--theme-navbar-logo-size);
+    height: var(--theme-navbar-logo-size);
+    max-height: var(--theme-navbar-logo-size);
+    min-width: var(--theme-navbar-logo-size);
+    padding-right: 0;
+    object-fit: contain;
+  }
+
+  #quarto-header .navbar-brand.navbar-brand-logo {
+    display: inline-flex;
+    flex: 0 0 var(--theme-navbar-logo-size);
+    width: var(--theme-navbar-logo-size);
+    height: var(--theme-navbar-logo-size);
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.25rem;
+  }
+</style>
+
 <script>
   (function () {
     const STORAGE_KEY = "theme-preference";

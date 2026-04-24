@@ -11,6 +11,12 @@ $navbar-collapse-max-width:   767.98px !default;
 $mobile-max-width:            $navbar-collapse-max-width !default;
 $tablet-min-width:            768px !default;
 
+// Navbar
+
+$theme-navbar-logo-size:      48px !default;
+$theme-navbar-fixed-reserve:  29px !default;
+$theme-navbar-fixed-offset:   $theme-navbar-logo-size + $theme-navbar-fixed-reserve !default;
+
 $cv-pdf-embed-height:         80vh !default;
 $cv-pdf-embed-min-height:     42rem !default;
 $cv-pdf-embed-height-mobile:  70vh !default;

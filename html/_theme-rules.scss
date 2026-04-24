@@ -1,64 +1,43 @@
 // Navbar
 
-#quarto-header {
-  background: $navbar-bg !important;
-  background-image: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  outline: 0 !important;
+:root {
+  --theme-navbar-logo-size: #{$theme-navbar-logo-size};
+  --theme-navbar-fixed-offset: #{$theme-navbar-fixed-offset};
 }
 
-.navbar {
-  font-size: $font-size-sm;
-  background-color: $navbar-bg !important;
-  background-image: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  outline: 0 !important;
-  background-clip: border-box;
-}
-
+#quarto-header,
 #quarto-header > nav.navbar {
-  background-color: $navbar-bg !important;
-  background-image: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  outline: 0 !important;
+  min-height: var(--theme-navbar-fixed-offset);
 }
 
-#quarto-header .navbar-container,
-#quarto-header .navbar-collapse,
-#quarto-header .navbar-brand-container,
-#quarto-header .navbar-nav {
-  background: transparent !important;
-  background-image: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  outline: 0 !important;
+#quarto-header .navbar {
+  font-size: $font-size-sm;
 }
 
 #quarto-header .navbar-logo {
   display: block;
-  width: 48px;
-  height: 48px;
-  max-height: 48px;
-  min-width: 48px;
+  width: var(--theme-navbar-logo-size);
+  height: var(--theme-navbar-logo-size);
+  max-height: var(--theme-navbar-logo-size);
+  min-width: var(--theme-navbar-logo-size);
   padding-right: 0;
   object-fit: contain;
 }
 
 #quarto-header .navbar-brand.navbar-brand-logo {
   display: inline-flex;
-  flex: 0 0 48px;
-  width: 48px;
-  height: 48px;
+  flex: 0 0 var(--theme-navbar-logo-size);
+  width: var(--theme-navbar-logo-size);
+  height: var(--theme-navbar-logo-size);
   align-items: center;
   justify-content: center;
   margin-right: 0.25rem;
 }
 
 body.nav-fixed {
-  padding-top: 77px;
+  // Reserve the final fixed-navbar height up front. Without this, slow logo/CSS
+  // loads can briefly expose a strip under the navbar and shift the page down.
+  padding-top: var(--theme-navbar-fixed-offset);
 }
 
 #quarto-search {
@@ -69,14 +48,6 @@ body.nav-fixed {
   #quarto-header .navbar-brand-container > .navbar-brand:not(.navbar-brand-logo) {
     display: none;
   }
-}
-
-#quarto-header::before,
-#quarto-header::after,
-#quarto-header > nav.navbar::before,
-#quarto-header > nav.navbar::after {
-  content: none;
-  display: none;
 }
 
 // Put right-side navbar icons in one row in the hamburger menu.
