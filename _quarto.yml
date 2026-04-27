@@ -29,6 +29,8 @@ website:
     left:
       - text: CV
         href: cv/index.qmd
+      - text: Documentation
+        href: https://docs.chunyi-lin.com/
       - text: Posts
         href: posts/index.qmd
       - text: AI Usage Disclosure
