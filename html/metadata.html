@@ -67,20 +67,78 @@ $endif$
   (function () {
     const STORAGE_KEY = "theme-preference";
     const VALID_PREFERENCES = ["light", "dark", "system"];
+    const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
+    const COOKIE_PATH = "/";
+    const COOKIE_SAME_SITE = "Lax";
+    const COOKIE_DOMAIN = (
+      window.__themeCookieDomain
+      || document.documentElement.getAttribute("data-theme-cookie-domain")
+      || ".chunyi-lin.com"
+    ).trim();
     const DARK_MEDIA = typeof window.matchMedia === "function"
       ? window.matchMedia("(prefers-color-scheme: dark)")
       : null;
 
+    function getCookieValue(name) {
+      const encodedName = name + "=";
+      const parts = document.cookie ? document.cookie.split(";") : [];
+
+      for (let i = 0; i < parts.length; i += 1) {
+        const part = parts[i].trim();
+        if (!part.startsWith(encodedName)) continue;
+
+        const rawValue = part.slice(encodedName.length);
+        try {
+          return decodeURIComponent(rawValue);
+        } catch (_) {
+          return rawValue;
+        }
+      }
+
+      return null;
+    }
+
+    function buildCookieAttributes(maxAgeSeconds) {
+      const attrs = [
+        "Max-Age=" + maxAgeSeconds,
+        "Path=" + COOKIE_PATH,
+        "SameSite=" + COOKIE_SAME_SITE
+      ];
+
+      if (COOKIE_DOMAIN) {
+        attrs.push("Domain=" + COOKIE_DOMAIN);
+      }
+
+      if (window.location.protocol === "https:") {
+        attrs.push("Secure");
+      }
+
+      return attrs.join("; ");
+    }
+
+    function setCookieValue(name, value, maxAgeSeconds) {
+      const encodedValue = encodeURIComponent(value);
+      document.cookie = name + "=" + encodedValue + "; " + buildCookieAttributes(maxAgeSeconds);
+    }
+
+    function removeCookie(name) {
+      document.cookie = name + "=; " + buildCookieAttributes(0);
+    }
+
+    function writeThemePreference(preference) {
+      if (!VALID_PREFERENCES.includes(preference)) return;
+      setCookieValue(STORAGE_KEY, preference, COOKIE_MAX_AGE_SECONDS);
+    }
+
     function readThemePreference() {
-      try {
-        const value = window.localStorage.getItem(STORAGE_KEY);
-        if (VALID_PREFERENCES.includes(value)) {
-          return value;
-        }
-        if (value !== null) {
-          window.localStorage.removeItem(STORAGE_KEY);
-        }
-      } catch (_) {}
+      const cookieValue = getCookieValue(STORAGE_KEY);
+      if (VALID_PREFERENCES.includes(cookieValue)) {
+        return cookieValue;
+      }
+
+      if (cookieValue !== null) {
+        removeCookie(STORAGE_KEY);
+      }
 
       return "system";
     }
@@ -91,16 +149,6 @@ $endif$
       }
 
       return DARK_MEDIA?.matches ? "dark" : "light";
-    }
-
-    function syncLegacyThemeState(resolved) {
-      try {
-        window.localStorage.setItem(
-          "quarto-color-scheme",
-          resolved === "dark" ? "alternate" : "default"
-        );
-        window.localStorage.removeItem("theme-mode-preference");
-      } catch (_) {}
     }
 
     function setRootThemeState(resolved, preference) {
@@ -144,7 +192,6 @@ $endif$
 
     function applyTheme(resolved, preference) {
       applyStylesheets(resolved);
-      syncLegacyThemeState(resolved);
       setRootThemeState(resolved, preference);
       setBodyThemeState(resolved);
       themeBootstrap.preference = preference;
@@ -156,9 +203,9 @@ $endif$
       STORAGE_KEY: STORAGE_KEY,
       VALID_PREFERENCES: VALID_PREFERENCES,
       darkMedia: DARK_MEDIA,
+      writeThemePreference: writeThemePreference,
       readThemePreference: readThemePreference,
       resolveTheme: resolveTheme,
-      syncLegacyThemeState: syncLegacyThemeState,
       setRootThemeState: setRootThemeState,
       applyStylesheets: applyStylesheets,
       applyTheme: applyTheme

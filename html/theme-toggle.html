@@ -259,9 +259,7 @@
           const nextPreference = option.dataset.themeValue;
           if (!theme.VALID_PREFERENCES.includes(nextPreference)) return;
 
-          try {
-            window.localStorage.setItem(theme.STORAGE_KEY, nextPreference);
-          } catch (_) {}
+          theme.writeThemePreference(nextPreference);
 
           applyThemePreference(nextPreference);
           reloadWithoutScrollRestoration();
