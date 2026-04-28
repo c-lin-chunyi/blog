@@ -3,7 +3,11 @@ window.MathJax = {
   loader: {
     paths: {
       "mathjax-stix2": "/html/vendor/mathjax-stix2-font"
-    }
+    },
+    load: [
+      "[tex]/mathtools",
+      "[tex]/physics"
+    ]
   },
   output: {
     font: "[mathjax-stix2]"
